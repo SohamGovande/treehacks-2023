@@ -1,34 +1,10 @@
 import { loadModules } from "esri-loader"
 import { Map, WebMap } from "@esri/react-arcgis"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
+import convexhull from "@/utils/convexhull"
+import kmeansAsync from "@/utils/kmeans"
 
-function getStandardDeviation(array) {
-  const n = array.length
-  const mean = array.reduce((a, b) => a + b) / n
-  return Math.sqrt(array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
-}
-
-const generateRings = (points) => {
-  const paddingMultiplier = 1
-  const paddingX = getStandardDeviation(points.map((p) => p[0])) * paddingMultiplier
-  const paddingY = getStandardDeviation(points.map((p) => p[1])) * paddingMultiplier
-  // Find the minimum x and y values, and the maximum x and y values
-  const minX = Math.min(...points.map((p) => p[0])) - paddingX
-  const minY = Math.min(...points.map((p) => p[1])) - paddingY
-  const maxX = Math.max(...points.map((p) => p[0])) + paddingX
-  const maxY = Math.max(...points.map((p) => p[1])) + paddingY
-  // Return a rectangle that is 10% larger than the minimum and maximum x and y values
-  return [
-    [minX, minY],
-    [maxX, minY],
-    [maxX, maxY],
-    [minX, maxY],
-    [minX, minY],
-  ]
-}
-
-const genernatePointCluster = (n, maxRadius, long, lat) => {
+const generateRandomPoints = (n, maxRadius, long, lat) => {
   const cluster = []
   for (let i = 0; i < n; i++) {
     // Generate a random angle between 0 and 2π
@@ -42,74 +18,122 @@ const genernatePointCluster = (n, maxRadius, long, lat) => {
   return cluster
 }
 
+const generateConvexHillPolygonRings = (points) => {
+  const pointsXY = points.map((p) => ({ x: p[0], y: p[1] }))
+  const hull = convexhull.makeHull(pointsXY)
+  const rings = []
+  for (let i = 0; i < hull.length; i++) {
+    rings.push([hull[i].x, hull[i].y])
+  }
+  rings.push([hull[0].x, hull[0].y])
+
+  // "Scale up" the rings by finding their mean and then adding 10% of the distance from the mean to each point
+  const meanX = rings.reduce((a, b) => a + b[0], 0) / rings.length
+  const meanY = rings.reduce((a, b) => a + b[1], 0) / rings.length
+  const paddingMultiplier = 0.2
+  const scaledRings = rings.map((p) => [
+    p[0] + (p[0] - meanX) * paddingMultiplier,
+    p[1] + (p[1] - meanY) * paddingMultiplier,
+  ])
+
+  return scaledRings
+}
+
+const createCircle = (point, radius) => {
+  const points = []
+  // Go around the circle in 10 degree increments and add the points to the array
+  const increment = 10
+  for (let i = 0; i <= 360; i += increment) {
+    const angle = (i * Math.PI) / 180
+    points.push([point[0] + radius * Math.cos(angle), point[1] + radius * Math.sin(angle)])
+  }
+  return
+}
+
 const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
-  const rings = useMemo(() => generateRings(points), [points])
-
-  // console.log(rings)
-
+  const rings = useMemo(() => generateConvexHillPolygonRings(points), [points])
   const [gfx, setGfx] = useState([])
-  useEffect(() => {
-    loadModules(["esri/Graphic"])
-      .then(([Graphic]) => {
-        // Create a polygon geometry
-        const polygon = {
-          type: "polygon", // autocasts as new Polygon()
-          rings: rings,
-        }
+  const [n, setN] = useState(0)
 
-        // Create a symbol for rendering the graphic
-        const fillSymbol = {
-          type: "simple-fill", // autocasts as new SimpleFillSymbol()
-          color: [200, 0, 0, 0.2],
+  const addGraphics = (Graphic, Circle) => {
+    if (n > 20) {
+      return
+    }
+    setN(i => i + 1)
+    for (const graphic of gfx) {
+      view.graphics.remove(graphic)
+      setGfx((gfx) => [])
+    }
+
+    // Create a polygon geometry
+    const polygon = {
+      type: "polygon", // autocasts as new Polygon()
+      rings: rings,
+    }
+
+    // Create a symbol for rendering the graphic
+    const fillSymbol = {
+      type: "simple-fill", // autocasts as new SimpleFillSymbol()
+      color: [200, 0, 0, 0.2],
+      outline: {
+        // autocasts as new SimpleLineSymbol()
+        color: [255, 255, 255],
+        width: 1,
+      },
+    }
+
+    // watch for changes to the selectedFeature
+    view.popup.watch("selectedFeature", (graphic) => {
+      if (graphic) {
+        onViewDashboard(id)
+      }
+    })
+
+    // Add the geometry and symbol to a new graphic
+    const graphic = new Graphic({
+      geometry: polygon,
+      symbol: fillSymbol,
+      popupTemplate: {
+        id: id,
+        title: `Hotspot #${id}`,
+        content: "See the dashboard on the right for more information!",
+      },
+    })
+
+    setGfx((gfx) => [...gfx, graphic])
+    view.graphics.add(graphic)
+
+    // Add points for each of the locations
+    for (const point of points) {
+      const circleGeometry = new Circle({
+        center: point,
+        geodesic: true,
+        numberOfPoints: 100,
+        radius: 2,
+        radiusUnit: "kilometers",
+      })
+
+      const graphic = new Graphic({
+        geometry: circleGeometry,
+        symbol: {
+          type: "simple-fill",
+          style: "none",
           outline: {
-            // autocasts as new SimpleLineSymbol()
-            color: [255, 255, 255],
-            width: 1,
+            width: 3,
+            color: "red",
           },
-        }
+        },
+      })
 
-        // Add points for each of the locations
-        for (const point of points) {
-          const graphic = new Graphic({
-            geometry: {
-              type: "point", // autocasts as new Point()
-              longitude: point[0],
-              latitude: point[1],
-            },
-            symbol: {
-              type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-              color: [255, 255, 255],
-              outline: {
-                // autocasts as new SimpleLineSymbol()
-                color: [0, 0, 0],
-                width: 1,
-              },
-            },
-          })
-          setGfx([...gfx, graphic])
-          view.graphics.add(graphic)
-        }
+      setGfx((gfx) => [...gfx, graphic])
+      view.graphics.add(graphic)
+    }
+  }
 
-        // watch for changes to the selectedFeature
-        view.popup.watch("selectedFeature", (graphic) => {
-          if (graphic) {
-            onViewDashboard(id)
-          }
-        })
-
-        // Add the geometry and symbol to a new graphic
-        const graphic = new Graphic({
-          geometry: polygon,
-          symbol: fillSymbol,
-          popupTemplate: {
-            id: id,
-            title: `Hotspot #${id}`,
-            content: "See the dashboard on the right for more information!",
-          },
-        })
-
-        setGfx([...gfx, graphic])
-        view.graphics.add(graphic)
+  useEffect(() => {
+    loadModules(["esri/Graphic", "esri/geometry/Circle"])
+      .then(([Graphic, Circle]) => {
+        addGraphics(Graphic, Circle)
       })
       .catch((err) => console.error(err))
 
@@ -123,13 +147,36 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
   return null
 }
 
-const cluster = genernatePointCluster(5, 2, -64.78, 32.3)
+const cluster = generateRandomPoints(100, 10, -64.78, 32.3)
 
 export default function ReactMap({ onViewDashboard }) {
+  const [clusters, setClusters] = useState([])
   const onLoad = async () => {}
+
+  const createClusters = async () => {
+    const results = await kmeansAsync(cluster, {
+      k: 3,
+    })
+    setClusters(results.map((result) => result.cluster))
+  }
+
+  useEffect(() => {
+    createClusters()
+  }, [])
+
   return (
-    <Map mapProperties={{ basemap: "satellite" }} onLoad={onLoad}>
-      <HotspotPolygon id={1} points={cluster} onViewDashboard={onViewDashboard} />
+    <Map
+      mapProperties={{
+        basemap: "satellite",
+      }}
+      viewProperties={{
+        center: [-64.78, 32.3],
+        zoom: 5,
+      }}
+      onLoad={onLoad}>
+      {clusters.map((cluster, i) => (
+        <HotspotPolygon key={i} id={i + 1} points={cluster} onViewDashboard={onViewDashboard} />
+      ))}
     </Map>
   )
 }
