@@ -6,6 +6,7 @@ import { motion, useScroll } from "framer-motion"
 import Typewriter from "typewriter-effect"
 import { useRouter } from "next/router"
 import Link from "next/link"
+import MapPageContents from "@/components/MapPageContents"
 
 const World = lazy(() => import("../components/Globe"))
 
@@ -83,9 +84,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Ship</title>
-      <link rel="prefetch" href="/map" />
-
+        <title>ShipSense.AI - Reduce overfishing</title>
       </Head>
       <Box w="100vw" h="100vh" bg="black" color="white">
         {!ssr && (
