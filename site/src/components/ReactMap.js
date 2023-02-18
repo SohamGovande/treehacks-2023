@@ -1,6 +1,7 @@
 import { loadModules } from "esri-loader"
 import { Map, WebMap } from "@esri/react-arcgis"
 import { useEffect, useMemo, useRef, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 
 function getStandardDeviation(array) {
   const n = array.length
@@ -89,6 +90,13 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
           view.graphics.add(graphic)
         }
 
+        // watch for changes to the selectedFeature
+        view.popup.watch("selectedFeature", (graphic) => {
+          if (graphic) {
+            onViewDashboard(id)
+          }
+        })
+
         // Add the geometry and symbol to a new graphic
         const graphic = new Graphic({
           geometry: polygon,
@@ -97,21 +105,7 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
             id: id,
             title: `Hotspot #${id}`,
             content: "See the dashboard on the right for more information!",
-            actions: [
-              {
-                id: "view-dashboard",
-                title: "View Dashboard",
-                image:
-                  "https://developers.arcgis.com/javascript/latest/sample-code/popup-actions/live/Measure_Distance16.png",
-              },
-            ],
           },
-        })
-
-        view.popup.on("trigger-action", (event) => {
-          if (event.action.id === "view-dashboard") {
-            onViewDashboard(id)
-          }
         })
 
         setGfx([...gfx, graphic])
@@ -131,12 +125,11 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
 
 const cluster = genernatePointCluster(5, 2, -64.78, 32.3)
 
-export default function ReactMap() {
+export default function ReactMap({ onViewDashboard }) {
   const onLoad = async () => {}
-
   return (
     <Map mapProperties={{ basemap: "satellite" }} onLoad={onLoad}>
-      <HotspotPolygon id={1} points={cluster} />
+      <HotspotPolygon id={1} points={cluster} onViewDashboard={onViewDashboard} />
     </Map>
   )
 }

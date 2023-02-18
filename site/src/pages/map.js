@@ -1,15 +1,20 @@
-import { Box, useToken, chakra, Flex } from "@chakra-ui/react"
+import { Box, useToken, chakra, Flex, Heading, UnorderedList, ListItem, Text, Button, ButtonGroup } from "@chakra-ui/react"
 import Head from "next/head"
 import { lazy, useEffect, useState } from "react"
-import fs from "fs"
-import data from "@/utils/data.json"
+import { AnimatePresence, motion } from "framer-motion"
+import { CloseIcon, LinkIcon } from "@chakra-ui/icons"
 
 const LazyMap = lazy(() => import("@/components/ReactMap"))
 
 export default function MapPage({ html }) {
   const white = "white"
   const gray = useToken("colors", "gray.200")
+  const [dashboardId, setDashboardId] = useState(-1)
   const [ssr, setSsr] = useState(true)
+
+  const onExport = (id) => {
+    // TODO
+  }
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -25,31 +30,45 @@ export default function MapPage({ html }) {
       <Box
         w="100vw"
         h="100vh"
-        // bg={`linear-gradient(to bottom right, ${white}, ${gray}, ${white}, ${gray}, ${white}, ${gray})`}
+        bg={`linear-gradient(to bottom right, ${white}, ${gray}, ${white}, ${gray}, ${white}, ${gray})`}
       >
         <Flex direction="row" align="stretch" h="100%" p={10}>
-          <Box flex={1} borderRadius='xl'>{!ssr && <LazyMap />}</Box>
-          <Box flex={1} />
+          <Box flex={1} borderRadius="xl">
+            {!ssr && <LazyMap onViewDashboard={setDashboardId} />}
+          </Box>
+          <AnimatePresence exitBeforeEnter>
+            {dashboardId !== -1 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ flex: 1 }}>
+                <Box px={10} fontSize='xl'>
+                  <Heading as="h1">Hotspot #{dashboardId}</Heading>
+                  <Text mt={4}>
+                    Centered at <b>40.7128° N, 74.0060° W</b>
+                  </Text>
+                  <UnorderedList fontSize="xl" mt={4}>
+                  <ListItem>
+                      <b>Tracked data from dates:</b>&nbsp;2021-01-01 to 2021-01-31
+                    </ListItem>
+                    <ListItem>
+                      <b>Estimated amount of wildlife loss:</b>&nbsp;1,500 fish
+                    </ListItem>
+                    <ListItem>
+                      <b>Fish species threatened:</b>&nbsp;Salmon, Cod, Herring
+                    </ListItem>
+                  </UnorderedList>
+                  <Flex gap={2}>
+                  <Button mt={4} colorScheme="blue" variant='solid' leftIcon={<LinkIcon />} onClick={() => onExport(id)}>
+                    Export Report to Law Enforcement
+                  </Button>
+                  <Button mt={4} variant='outline' leftIcon={<CloseIcon color='gray' />} onClick={() => setDashboardId(-1)}>
+                    Close
+                  </Button>
+                  </Flex>
+                </Box>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Flex>
       </Box>
     </>
   )
-}
-
-export const getStaticProps = async () => {
-  // Read the file assets/map.html from the root
-  const buffer = fs.readFileSync(`${process.cwd()}/assets/map.html`)
-  // Convert buffer to string
-  let modified = buffer.toString()
-  for (const [key, value] of Object.entries(data.htmlVariables)) {
-    modified = modified.replace(key, JSON.stringify(value))
-  }
-  // Convert string to base64
-  const base64 = btoa(modified)
-  const html = `data:text/html;base64,${base64}`
-  return {
-    props: {
-      html,
-    },
-  }
 }
