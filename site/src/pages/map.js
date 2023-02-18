@@ -22,7 +22,7 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
           animate={{ x: "0%" }}
           exit={{ x: "-100%" }}
           style={{
-            position: "fixed",
+            position: "absolute",
             top: 0,
             left: 0,
             bottom: 0,
@@ -62,6 +62,22 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
   )
 }
 
+const VignetteEffect = ({ to }) => {
+  const white = useToken("colors", "blackAlpha.300")
+  const size = 15
+  return (
+    <chakra.div
+      pointerEvents='none'
+      position="absolute"
+      top={0}
+      left={0}
+      right={0}
+      bottom={0}
+      bgGradient={`linear(to ${to}, transparent ${100-size}%, ${white} 100%)`}
+    />
+  )
+}
+
 export default function MapPage({ html }) {
   const [dashboardId, setDashboardId] = useState(-1)
   const [ssr, setSsr] = useState(true)
@@ -84,6 +100,10 @@ export default function MapPage({ html }) {
       <Box w="100vw" h="100vh" bg={gradient}>
         {!ssr && <LazyMap onViewDashboard={setDashboardId} />}
       </Box>
+      <VignetteEffect to='bottom' />
+      <VignetteEffect to='top' />
+      <VignetteEffect to='left' />
+      <VignetteEffect to='right' />
       <Sidebar dashboardId={dashboardId} setDashboardId={setDashboardId} />
     </>
   )
