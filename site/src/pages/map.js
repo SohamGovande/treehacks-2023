@@ -18,9 +18,9 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
           transition={{
             ease: 'easeInOut'
           }}
-          initial={{ x: "-100%" }}
-          animate={{ x: "0%" }}
-          exit={{ x: "-100%" }}
+          initial={{ x: "-100%", opacity: 0 }}
+          animate={{ x: "0%", opacity: 1 }}
+          exit={{ x: "-100%", opacity: 0 }}
           style={{
             position: "absolute",
             top: 0,
@@ -63,7 +63,7 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
 }
 
 const VignetteEffect = ({ to }) => {
-  const white = useToken("colors", "blackAlpha.300")
+  const white = useToken("colors", "blackAlpha.500")
   const size = 15
   return (
     <chakra.div
