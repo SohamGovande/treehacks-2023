@@ -2,18 +2,21 @@ import { loadModules } from "esri-loader"
 import { Map, WebMap } from "@esri/react-arcgis"
 import { useEffect, useMemo, useRef, useState } from "react"
 
+function getStandardDeviation(array) {
+  const n = array.length
+  const mean = array.reduce((a, b) => a + b) / n
+  return Math.sqrt(array.map((x) => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+}
+
 const generateRings = (points) => {
+  const paddingMultiplier = 1
+  const paddingX = getStandardDeviation(points.map((p) => p[0])) * paddingMultiplier
+  const paddingY = getStandardDeviation(points.map((p) => p[1])) * paddingMultiplier
   // Find the minimum x and y values, and the maximum x and y values
-  const minX = Math.min(...points.map((p) => p[0]))
-  const minY = Math.min(...points.map((p) => p[1]))
-  const maxX = Math.max(...points.map((p) => p[0]))
-  const maxY = Math.max(...points.map((p) => p[1]))
-  console.log({
-    minX,
-    minY,
-    maxX,
-    maxY,
-  })
+  const minX = Math.min(...points.map((p) => p[0])) - paddingX
+  const minY = Math.min(...points.map((p) => p[1])) - paddingY
+  const maxX = Math.max(...points.map((p) => p[0])) + paddingX
+  const maxY = Math.max(...points.map((p) => p[1])) + paddingY
   // Return a rectangle that is 10% larger than the minimum and maximum x and y values
   return [
     [minX, minY],
@@ -24,10 +27,13 @@ const generateRings = (points) => {
   ]
 }
 
-const genernatePointCluster = (n, radius, long, lat) => {
+const genernatePointCluster = (n, maxRadius, long, lat) => {
   const cluster = []
   for (let i = 0; i < n; i++) {
-    const angle = (i / n) * 2 * Math.PI
+    // Generate a random angle between 0 and 2π
+    const angle = Math.random() * 2 * Math.PI
+    // Generate a random radius between 0 and the radius
+    const radius = Math.random() * maxRadius
     const x = long + radius * Math.cos(angle)
     const y = lat + radius * Math.sin(angle)
     cluster.push([x, y])
@@ -35,13 +41,12 @@ const genernatePointCluster = (n, radius, long, lat) => {
   return cluster
 }
 
-const HotspotPolygon = (props) => {
-  const { points } = props
+const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
   const rings = useMemo(() => generateRings(points), [points])
 
   // console.log(rings)
 
-  const [graphic, setGraphic] = useState(null)
+  const [gfx, setGfx] = useState([])
   useEffect(() => {
     loadModules(["esri/Graphic"])
       .then(([Graphic]) => {
@@ -62,24 +67,64 @@ const HotspotPolygon = (props) => {
           },
         }
 
+        // Add points for each of the locations
+        for (const point of points) {
+          const graphic = new Graphic({
+            geometry: {
+              type: "point", // autocasts as new Point()
+              longitude: point[0],
+              latitude: point[1],
+            },
+            symbol: {
+              type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+              color: [255, 255, 255],
+              outline: {
+                // autocasts as new SimpleLineSymbol()
+                color: [0, 0, 0],
+                width: 1,
+              },
+            },
+          })
+          setGfx([...gfx, graphic])
+          view.graphics.add(graphic)
+        }
+
         // Add the geometry and symbol to a new graphic
         const graphic = new Graphic({
           geometry: polygon,
           symbol: fillSymbol,
           popupTemplate: {
-            title: "Bermuda Triangle",
-            content: "This is the Bermuda Triangle",
+            id: id,
+            title: `Hotspot #${id}`,
+            content: "See the dashboard on the right for more information!",
+            actions: [
+              {
+                id: "view-dashboard",
+                title: "View Dashboard",
+                image:
+                  "https://developers.arcgis.com/javascript/latest/sample-code/popup-actions/live/Measure_Distance16.png",
+              },
+            ],
           },
         })
-        setGraphic(graphic)
-        props.view.graphics.add(graphic)
+
+        view.popup.on("trigger-action", (event) => {
+          if (event.action.id === "view-dashboard") {
+            onViewDashboard(id)
+          }
+        })
+
+        setGfx([...gfx, graphic])
+        view.graphics.add(graphic)
       })
       .catch((err) => console.error(err))
 
     return function cleanup() {
-      props.view.graphics.remove(graphic)
+      for (const graphic of gfx) {
+        view.graphics.remove(graphic)
+      }
     }
-  }, [graphic])
+  }, [gfx])
 
   return null
 }
@@ -91,7 +136,7 @@ export default function ReactMap() {
 
   return (
     <Map mapProperties={{ basemap: "satellite" }} onLoad={onLoad}>
-      <HotspotPolygon points={cluster} />
+      <HotspotPolygon id={1} points={cluster} />
     </Map>
   )
 }
