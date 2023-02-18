@@ -8,6 +8,12 @@ const generateRings = (points) => {
   const minY = Math.min(...points.map((p) => p[1]))
   const maxX = Math.max(...points.map((p) => p[0]))
   const maxY = Math.max(...points.map((p) => p[1]))
+  console.log({
+    minX,
+    minY,
+    maxX,
+    maxY,
+  })
   // Return a rectangle that is 10% larger than the minimum and maximum x and y values
   return [
     [minX, minY],
@@ -15,8 +21,18 @@ const generateRings = (points) => {
     [maxX, maxY],
     [minX, maxY],
     [minX, minY],
-
   ]
+}
+
+const genernatePointCluster = (n, radius, long, lat) => {
+  const cluster = []
+  for (let i = 0; i < n; i++) {
+    const angle = (i / n) * 2 * Math.PI
+    const x = long + radius * Math.cos(angle)
+    const y = lat + radius * Math.sin(angle)
+    cluster.push([x, y])
+  }
+  return cluster
 }
 
 const HotspotPolygon = (props) => {
@@ -24,7 +40,7 @@ const HotspotPolygon = (props) => {
   const rings = useMemo(() => generateRings(points), [points])
 
   // console.log(rings)
-  
+
   const [graphic, setGraphic] = useState(null)
   useEffect(() => {
     loadModules(["esri/Graphic"])
@@ -68,24 +84,14 @@ const HotspotPolygon = (props) => {
   return null
 }
 
-const generatePointCluster = (long, lat) => {
-  const size = 1
-  return [
-    [long, lat],
-  ]
-}
+const cluster = genernatePointCluster(5, 2, -64.78, 32.3)
 
-const clusters = [
-  generatePointCluster(15.4881, 114.4048)
-]
 export default function ReactMap() {
-  const mapDiv = useRef(null)
-
   const onLoad = async () => {}
 
   return (
     <Map mapProperties={{ basemap: "satellite" }} onLoad={onLoad}>
-      <HotspotPolygon points={clusters[0]} />
+      <HotspotPolygon points={cluster} />
     </Map>
   )
 }
