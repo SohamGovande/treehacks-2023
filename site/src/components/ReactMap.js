@@ -2,9 +2,6 @@ import { Box, useToken, chakra, Flex, Heading, UnorderedList, ListItem, Text, Bu
 import Head from "next/head"
 import { lazy, useEffect, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import convexhull from "@/utils/convexhull"
-import kmeansAsync from "@/utils/kmeans"
-import { clusterize } from "node-kmeans"
 
 const Sidebar = ({ dashboardId, setDashboardId }) => {
   return (
