@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import convexhull from "@/utils/convexhull"
 import kmeansAsync from "@/utils/kmeans"
 
+const INITIAL_WINDOW_LOCATION = [114.4048, 15.4881]
+
 const generateRandomPoints = (n, maxRadius, long, lat) => {
   const cluster = []
   for (let i = 0; i < n; i++) {
@@ -59,7 +61,7 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
     if (n > 20) {
       return
     }
-    setN(i => i + 1)
+    setN((i) => i + 1)
     for (const graphic of gfx) {
       view.graphics.remove(graphic)
       setGfx((gfx) => [])
@@ -77,7 +79,7 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
       color: [200, 0, 0, 0.2],
       outline: {
         // autocasts as new SimpleLineSymbol()
-        color: [255, 255, 255],
+        color: [200, 0, 0, 1],
         width: 1,
       },
     }
@@ -147,7 +149,7 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
   return null
 }
 
-const cluster = generateRandomPoints(100, 10, -64.78, 32.3)
+const cluster = generateRandomPoints(50, 4, INITIAL_WINDOW_LOCATION[0], INITIAL_WINDOW_LOCATION[1])
 
 export default function ReactMap({ onViewDashboard }) {
   const [clusters, setClusters] = useState([])
@@ -170,7 +172,7 @@ export default function ReactMap({ onViewDashboard }) {
         basemap: "satellite",
       }}
       viewProperties={{
-        center: [-64.78, 32.3],
+        center: INITIAL_WINDOW_LOCATION,
         zoom: 5,
       }}
       onLoad={onLoad}>
