@@ -78,7 +78,7 @@ const VignetteEffect = ({ to }) => {
   )
 }
 
-export default function MapPage({ html }) {
+export default function MapPage() {
   const [dashboardId, setDashboardId] = useState(-1)
   const [ssr, setSsr] = useState(true)
 
