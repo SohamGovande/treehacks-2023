@@ -59,7 +59,6 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
     if (n > 20) {
       return
     }
-    console.log('rendering ' + n)
     setN(i => i + 1)
     for (const graphic of gfx) {
       view.graphics.remove(graphic)
