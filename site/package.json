@@ -19,11 +19,16 @@
     "@fontsource/nunito": "^4.5.12",
     "@fontsource/raleway": "^4.5.12",
     "@next/font": "13.1.6",
+    "d3": "^7.8.2",
     "framer-motion": "^9.0.4",
     "next": "13.1.6",
     "node-kmeans": "^1.1.9",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "resize-observer-polyfill": "^1.5.1"
+    "react-globe.gl": "^2.23.3",
+    "react-simple-typewriter": "^5.0.1",
+    "resize-observer-polyfill": "^1.5.1",
+    "three": "^0.149.0",
+    "three-globe": "^2.25.4"
   }
 }
