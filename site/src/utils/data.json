@@ -1,0 +1,17 @@
+{
+  "htmlVariables": {
+    "mapLatPosition": 114.404754,
+    "mapLngPosition": 15.488092,
+    "pointData": [
+      {
+        "long": 114.404754,
+        "lat": 15.488092,
+        "name": "Graphic",
+        "description": "I am a polygon",
+        "r": 226,
+        "g": 119,
+        "b": 40
+      }
+    ]
+  }
+}

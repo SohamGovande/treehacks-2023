@@ -1,0 +1,80 @@
+<html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+      <style>
+        html,
+        body,
+        #viewDiv {
+          padding: 0;
+          margin: 0;
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+      <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css" />
+      <script src="https://js.arcgis.com/4.25/"></script>
+      <script>
+        const JSON_POINT_DATA = pointData
+
+        require(["esri/config", "esri/Map", "esri/views/MapView", "esri/Graphic", "esri/layers/GraphicsLayer"], function (
+          esriConfig,
+          Map,
+          MapView,
+          Graphic,
+          GraphicsLayer
+        ) {
+          esriConfig.apiKey =
+            "AAPK0ceabff597ba474880801726be51aa05TWw8XyORmLS-SOayC5ykxOiHyBSAMfoyB1nLWQcTKNWdSTFJg57w4JKu8E9YM922"
+
+          const map = new Map({
+            basemap: "arcgis-dark-gray", //Basemap layer service
+          })
+
+          const view = new MapView({
+            map: map,
+            center: [mapLatPosition, mapLngPosition], //Longitude, latitude
+            zoom: 13,
+            container: "viewDiv",
+          })
+
+          const graphicsLayer = new GraphicsLayer()
+          map.add(graphicsLayer)
+
+          for (const point of JSON_POINT_DATA) {
+            const pointGraphic = new Graphic({
+              geometry: {
+                type: "point",
+                longitude: point.long,
+                latitude: point.lat,
+                // Make the point smaller
+                z: 1000, 
+              },
+              symbol: {
+                type: "simple-marker",
+                color: [point.r, point.g, point.b], // Orange
+                outline: {
+                  color: [255, 255, 255], // White
+                  width: 1,
+                },
+              },
+              attributes: {
+                Name: point.name,
+                Description: point.description,
+              },
+              popupTemplate: {
+                title: "{Name}",
+                content: "{Description}",
+              },
+            })
+            graphicsLayer.add(pointGraphic)
+          }
+        })
+      </script>
+    </head>
+    <body>
+      <div id="viewDiv"></div>
+    </body>
+  </html>
+</html>
