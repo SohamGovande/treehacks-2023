@@ -1,10 +1,8 @@
 import { loadModules } from "esri-loader"
 import { Map, WebMap } from "@esri/react-arcgis"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
 import convexhull from "@/utils/convexhull"
 import kmeansAsync from "@/utils/kmeans"
-import { clusterize } from "node-kmeans"
 
 function getStandardDeviation(array) {
   const n = array.length
