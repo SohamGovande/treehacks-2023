@@ -59,6 +59,7 @@ export default function Home() {
         justify="center"
         direction="column"
         w="100vw"
+        pointerEvents="none"
         h="100vh"
         pos="absolute"
         top={0}
