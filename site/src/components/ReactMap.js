@@ -54,7 +54,7 @@ const HotspotPolygon = (props) => {
         // Create a symbol for rendering the graphic
         const fillSymbol = {
           type: "simple-fill", // autocasts as new SimpleFillSymbol()
-          color: [255, 255, 255, 0.2],
+          color: [200, 0, 0, 0.2],
           outline: {
             // autocasts as new SimpleLineSymbol()
             color: [255, 255, 255],
