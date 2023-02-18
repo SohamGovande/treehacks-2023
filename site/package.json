@@ -14,13 +14,12 @@
     "@chakra-ui/react": "^2.5.1",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@esri/react-arcgis": "^5.2.0",
     "@next/font": "13.1.6",
     "framer-motion": "^9.0.4",
     "next": "13.1.6",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
-  },
-  "devDependencies": {
+    "react-dom": "18.2.0",
     "resize-observer-polyfill": "^1.5.1"
   }
 }

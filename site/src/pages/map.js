@@ -1,12 +1,21 @@
 import { Box, useToken, chakra, Flex } from "@chakra-ui/react"
 import Head from "next/head"
-import { useEffect } from "react"
+import { lazy, useEffect, useState } from "react"
 import fs from "fs"
 import data from "@/utils/data.json"
+
+const LazyMap = lazy(() => import("@/components/ReactMap"))
 
 export default function MapPage({ html }) {
   const white = "white"
   const gray = useToken("colors", "gray.200")
+  const [ssr, setSsr] = useState(true)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setSsr(false)
+    }
+  }, [])
 
   return (
     <>
@@ -16,15 +25,11 @@ export default function MapPage({ html }) {
       <Box
         w="100vw"
         h="100vh"
-        bg={`linear-gradient(to bottom right, ${white}, ${gray}, ${white}, ${gray}, ${white}, ${gray})`}>
-        {/* Create an iframe with the html */}
-        <Flex direction='row' align='stretch' h='100%' p={10}>
-          <Box flex={1} transform='translateY(0px)'>
-            <iframe src={html} width="100%" height="100%" frameBorder={0} style={{ borderRadius: '20px' }} />
-          </Box>
-          <Box flex={1}>
-
-          </Box>
+        // bg={`linear-gradient(to bottom right, ${white}, ${gray}, ${white}, ${gray}, ${white}, ${gray})`}
+      >
+        <Flex direction="row" align="stretch" h="100%" p={10}>
+          <Box flex={1} borderRadius='xl'>{!ssr && <LazyMap />}</Box>
+          <Box flex={1} />
         </Flex>
       </Box>
     </>
