@@ -1,6 +1,6 @@
-import { Box, useToken, chakra, Flex, Heading, UnorderedList, ListItem, Text, Button, ButtonGroup, IconButton } from "@chakra-ui/react"
-import Head from "next/head"
-import { lazy, useEffect, useState } from "react"
+import { loadModules } from "esri-loader"
+import { Map, WebMap } from "@esri/react-arcgis"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { CloseIcon, LinkIcon } from "@chakra-ui/icons"
 
@@ -62,20 +62,18 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
   )
 }
 
-const VignetteEffect = ({ to }) => {
-  const white = useToken("colors", "blackAlpha.500")
-  const size = 15
-  return (
-    <chakra.div
-      pointerEvents='none'
-      position="absolute"
-      top={0}
-      left={0}
-      right={0}
-      bottom={0}
-      bgGradient={`linear(to ${to}, transparent ${100-size}%, ${white} 100%)`}
-    />
-  )
+const generateRandomPoints = (n, maxRadius, long, lat) => {
+  const cluster = []
+  for (let i = 0; i < n; i++) {
+    // Generate a random angle between 0 and 2π
+    const angle = Math.random() * 2 * Math.PI
+    // Generate a random radius between 0 and the radius
+    const radius = Math.random() * maxRadius
+    const x = long + radius * Math.cos(angle)
+    const y = lat + radius * Math.sin(angle)
+    cluster.push([x, y])
+  }
+  return cluster
 }
 
 export default function MapPage() {
@@ -87,24 +85,14 @@ export default function MapPage() {
   }
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setSsr(false)
-    }
+    createClusters()
   }, [])
 
   return (
-    <>
-      <Head>
-        <title>ShipSight Realtime Map</title>
-      </Head>
-      <Box w="100vw" h="100vh" bg={gradient}>
-        {!ssr && <LazyMap onViewDashboard={setDashboardId} />}
-      </Box>
-      <VignetteEffect to='bottom' />
-      <VignetteEffect to='top' />
-      <VignetteEffect to='left' />
-      <VignetteEffect to='right' />
-      <Sidebar dashboardId={dashboardId} setDashboardId={setDashboardId} />
-    </>
+    <Map mapProperties={{ basemap: "satellite" }} onLoad={onLoad}>
+      {clusters.map((cluster, i) => (
+        <HotspotPolygon key={i} id={i + 1} points={cluster} onViewDashboard={onViewDashboard} />
+      ))}
+    </Map>
   )
 }
