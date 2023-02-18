@@ -2,8 +2,10 @@ import Head from "next/head"
 import { Box, Flex, Heading, Text } from "@chakra-ui/react"
 import { useEffect, useState, useMemo, useRef } from "react"
 import { lazy } from "react"
-import { motion } from "framer-motion"
+import { motion, useScroll } from "framer-motion"
 import Typewriter from "typewriter-effect"
+import { useRouter } from "next/router"
+import Link from "next/link"
 
 const World = lazy(() => import("../components/Globe"))
 
@@ -33,18 +35,57 @@ const CustomTypewriterEffect = ({ strings, emojis, typeSpeed, pauseDelay, overal
   )
 }
 
+const END_THRESHOLD = -1000
+const END_THRESHOLD_BUFFER = 500
+const BEGIN_THRESHOLD = 0
+
+const calculateTextOpacity = (scrollCounter) => {
+  if (scrollCounter < BEGIN_THRESHOLD) {
+    const returnValue = 1 - (BEGIN_THRESHOLD - scrollCounter) / (BEGIN_THRESHOLD - END_THRESHOLD)
+    return returnValue
+  }
+  return 1
+}
+
 export default function Home() {
   const [ssr, setSsr] = useState(true)
+  const router = useRouter()
+  const [scrollCounter, setScrollCounter] = useState(0)
+  const [isRouting, setIsRouting] = useState(false)
+
+  // Add a wheel event listener to the window
+  const handleWheel = (e) => {
+    if (e.deltaY === 0) {
+      return
+    }
+    setScrollCounter((prev) => prev + e.deltaY)
+  }
+
+  useEffect(() => {
+    if (scrollCounter < END_THRESHOLD - END_THRESHOLD_BUFFER) {
+      setIsRouting(true)
+      setTimeout(() => {
+        router.push("/map")
+      }, 500)
+    }
+  }, [scrollCounter])
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setSsr(false)
     }
+
+    window.addEventListener("wheel", handleWheel)
+
+    return () => window.removeEventListener("wheel", handleWheel)
   }, [])
 
   return (
     <>
       <Head>
         <title>Ship</title>
+      <link rel="prefetch" href="/map" />
+
       </Head>
       <Box w="100vw" h="100vh" bg="black" color="white">
         {!ssr && (
@@ -54,7 +95,8 @@ export default function Home() {
         )}
       </Box>
       <Flex
-        color="white"
+        as={motion.div}
+        color={`rgba(255,255,255,${calculateTextOpacity(scrollCounter)})`}
         align="center"
         justify="center"
         direction="column"
@@ -72,9 +114,11 @@ export default function Home() {
         <Heading
           as="h2"
           fontWeight="400"
+          fontFamily="body"
           justifyContent="center"
           textAlign="center"
-          fontSize="7xl"
+          fontSize="5xl"
+          textShadow="0px 0px 10px rgba(0,0,0,1)"
           minH="1.5em"
           display="block">
           <CustomTypewriterEffect
@@ -85,6 +129,19 @@ export default function Home() {
             overallIterations={10}
           />
         </Heading>
+        <motion.div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 1,
+            pointerEvents: "none",
+          }}
+          animate={{ backgroundColor: isRouting ? "#000000FF" : "#00000000" }}
+          transition={{ duration: 0.5 }}
+        />
       </Flex>
     </>
   )

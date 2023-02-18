@@ -13,7 +13,6 @@ const World = () => {
     }
     return useToken('colors', color + `.${i}00`)
   })
-  console.log(gradient)
 
   const [cablePaths, setCablePaths] = useState([])
 

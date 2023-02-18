@@ -136,7 +136,7 @@ export default function MapPage() {
         }}
         initial={{ backgroundColor: "#000000ff" }}
         animate={{ backgroundColor: "#00000000" }}
-        transition={{ delay: 0.5, duration: 1 }}
+        transition={{ delay: 2, duration: 1 }}
       />
     </>
   )
