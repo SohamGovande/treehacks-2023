@@ -83,15 +83,6 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
         width: 1,
       },
     }
-
-    // watch for changes to the selectedFeature
-    view.popup.watch("selectedFeature", (graphic) => {
-      if (graphic) {
-        onViewDashboard(id)
-      }
-    })
-
-    // Add the geometry and symbol to a new graphic
     const graphic = new Graphic({
       geometry: polygon,
       symbol: fillSymbol,
@@ -101,6 +92,14 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
         content: "See the dashboard on the right for more information!",
       },
     })
+
+    // watch for changes to the selectedFeature
+    view.popup.watch("selectedFeature", (clickedGraphic) => {
+      if (clickedGraphic == graphic) {
+        onViewDashboard(id)
+      }
+    })
+
 
     setGfx((gfx) => [...gfx, graphic])
     view.graphics.add(graphic)
