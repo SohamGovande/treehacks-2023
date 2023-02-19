@@ -142,7 +142,7 @@ function Home() {
   return (
     <>
       <Head>
-        <title>ShipSense.AI - Reduce overfishing</title>
+        <title>ShipSense - Reduce global overfishing</title>
         {/* Add OG title and description */}
         <meta property="og:title" content="ShipSense.AI - Reduce overfishing with computer vision algorithms" />
         <meta
