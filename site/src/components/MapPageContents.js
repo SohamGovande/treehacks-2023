@@ -10,15 +10,6 @@ import {
   Button,
   ButtonGroup,
   IconButton,
-<<<<<<< HEAD
-} from '@chakra-ui/react'
-import Head from 'next/head'
-import { lazy, useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { CloseIcon, LinkIcon } from '@chakra-ui/icons'
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
-=======
   OrderedList,
 } from "@chakra-ui/react"
 import Head from "next/head"
@@ -27,7 +18,6 @@ import { AnimatePresence, motion } from "framer-motion"
 import { CloseIcon, LinkIcon } from "@chakra-ui/icons"
 import { Gradient } from "@/utils/gradient"
 import { useData } from "@/contexts/DataContext"
->>>>>>> 845a817741553c49098abda4221dcd346c7ab85e
 
 const LazyMap = lazy(() => import('@/components/ReactMap'))
 
@@ -35,7 +25,6 @@ const white = 'white'
 const gray = '#f1f1f1'
 const gradient = `linear-gradient(to bottom right, ${white}, ${gray}, ${white}, ${gray}, ${white}, ${gray})`
 
-<<<<<<< HEAD
 // Recursively iterate through an element's children
 const iterateChildren = (element, callback) => {
   callback(element)
@@ -63,12 +52,11 @@ function exportToPdf() {
   iterateChildren(element, (child) => {
     child.style.color = 'white'
   })
+}
 
-=======
 const formatCoordinate = (coord, pos, neg) => {
   const direction = coord > 0 ? pos : neg
   return `${Math.abs(coord).toFixed(3)}° ${direction}`
->>>>>>> 845a817741553c49098abda4221dcd346c7ab85e
 }
 
 const Sidebar = ({ dashboardId, setDashboardId }) => {
@@ -92,42 +80,6 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
 
   return (
     <AnimatePresence exitBeforeEnter>
-<<<<<<< HEAD
-      {dashboardId !== -1 && (
-        <motion.div
-          transition={{
-            ease: 'easeInOut',
-          }}
-          initial={{ x: '-100%', opacity: 0 }}
-          animate={{ x: '0%', opacity: 1 }}
-          exit={{ x: '-100%', opacity: 0 }}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            bottom: 0,
-            width: '40%',
-            backgroundImage: "url('/hotspot.png')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            color: 'white',
-          }}
-        >
-          <IconButton
-            position="absolute"
-            top={10}
-            right={8}
-            variant="unstyled"
-            aria-label="Close"
-            icon={<CloseIcon />}
-            onClick={() => setDashboardId(-1)}
-          />
-          <Box p={10} fontSize="xl">
-            <Box id="pdf-container">
-            <Heading as="h1">Hotspot #{dashboardId}</Heading>
-            <Text mt={4}>
-              Centered at <b>40.7128° N, 74.0060° W</b>
-=======
       <motion.div
         transition={{
           ease: "easeInOut",
@@ -171,7 +123,6 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
               <b>
                 {formatCoordinate(curHotspot.long, "N", "S")},&nbsp;{formatCoordinate(curHotspot.lat, "E", "W")}
               </b>
->>>>>>> 845a817741553c49098abda4221dcd346c7ab85e
             </Text>
             <Text>
               📆 Data from <b>{curHotspot.minTime}</b> to <b>{curHotspot.maxTime}</b>
@@ -189,7 +140,6 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
               Raw Data Points
             </Heading>
             [insert images here]
-            </Box>
             <Flex gap={2}>
               <Button
                 mt={4}

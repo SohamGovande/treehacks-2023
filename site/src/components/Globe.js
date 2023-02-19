@@ -1,17 +1,21 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import ReactDOM from 'react-dom'
-import Globe from 'react-globe.gl'
-import countries from '../files/custom.geo.json'
-import { useToken } from '@chakra-ui/react'
+import React, { useState, useEffect, useMemo } from "react"
+import ReactDOM from "react-dom"
+import Globe from "react-globe.gl"
+import countries from "../files/custom.geo.json"
+import { useToken } from "@chakra-ui/react"
+const cablesGeo = JSON.parse(require('@/utils/cablegeo.json').contents)
+if (typeof window === "undefined") {
+  require('fs').writeFileSync('/Users/sohamgovande/Documents/code/treehacks-2023/site/src/utils/cablegeo2.json', JSON.stringify(cablesGeo))
+}
 
-const color = 'purple'
+const color = "purple"
 
 const World = () => {
   const gradient = [...Array(10).keys()].map((i) => {
     if (i == 0) {
-      return useToken('colors', color + '.50')
+      return useToken("colors", color + ".50")
     }
-    return useToken('colors', color + `.${i}00`)
+    return useToken("colors", color + `.${i}00`)
   })
 
   const [cablePaths, setCablePaths] = useState([])
@@ -21,26 +25,16 @@ const World = () => {
     lat: (Math.random() - 0.5) * 180,
     lng: (Math.random() - 0.5) * 360,
     size: Math.random() / 3,
-    color: ['red'],
+    color: ["red"],
   }))
 
   useEffect(() => {
     // from https://www.submarinecablemap.com
-    console.log('fetching cables...')
-    fetch(
-      '//api.allorigins.win/get?url=https://www.submarinecablemap.com/api/v3/cable/cable-geo.json',
-    )
-      .then((r) => r.json().then((d) => JSON.parse(d.contents)))
-      .then((cablesGeo) => {
-        let cablePaths = []
-        cablesGeo.features.forEach(({ geometry, properties }) => {
-          geometry.coordinates.forEach((coords) =>
-            cablePaths.push({ coords, properties }),
-          )
-        })
-        console.log('loaded cables')
-        setCablePaths(cablePaths)
-      })
+    let cablePaths = []
+    cablesGeo.features.forEach(({ geometry, properties }) => {
+      geometry.coordinates.forEach((coords) => cablePaths.push({ coords, properties }))
+    })
+    setCablePaths(cablePaths)
   }, [])
 
   const [pathPointAlt, setPathPointAlt] = useState(0.01)
@@ -58,7 +52,7 @@ const World = () => {
           pathPoints="coords"
           pathPointLat={(p) => p[1]}
           pathPointLng={(p) => p[0]}
-          pathColor={() => 'rgba(137, 196, 244, 1)'}
+          pathColor={() => "rgba(137, 196, 244, 1)"}
           pathPointAlt={0.01}
           pathDashLength={0.1}
           pathDashGap={0.008}
@@ -69,7 +63,7 @@ const World = () => {
           animateIn={true}
           hexPolygonColor={() => gradient[Math.floor(Math.random() * 10)]}
         />,
-        document.getElementById('globeViz'),
+        document.getElementById("globeViz")
       )
     }
     renderGlobe()
