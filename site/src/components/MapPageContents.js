@@ -169,7 +169,7 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
                 </Button>
               </Flex>
               <Heading as="h2" mt={10}>
-                { imageIndices.length} Raw Satellite Images
+                Raw Satellite Images
               </Heading>
               <Grid mt={4} bg="black" templateColumns="repeat(5, 1fr)" gap={0.5}>
                 {imagesToShow.map((image, i) => (
