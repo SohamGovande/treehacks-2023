@@ -5,7 +5,7 @@ import convexhull from "@/utils/convexhull"
 import kmeansAsync from "@/utils/kmeans"
 import { useData } from "@/contexts/DataContext"
 
-const INITIAL_WINDOW_LOCATION = [114.4048, 15.4881]
+const INITIAL_WINDOW_LOCATION = [-8, -0.6]
 
 const generateConvexHillPolygonRings = (points) => {
   const pointsXY = points.map((p) => ({ x: p.long, y: p.lat }))

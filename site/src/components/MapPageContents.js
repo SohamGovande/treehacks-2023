@@ -17,11 +17,12 @@ import {
 import Head from "next/head"
 import { lazy, useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { CloseIcon, LinkIcon } from "@chakra-ui/icons"
+import { AddIcon, CloseIcon, LinkIcon, MinusIcon } from "@chakra-ui/icons"
 import { Gradient } from "@/utils/gradient"
 import { useData } from "@/contexts/DataContext"
 import { FaFilePdf } from "react-icons/fa"
-
+import html2canvas from "html2canvas"
+import jsPDF from "jspdf"
 const LazyMap = lazy(() => import("@/components/ReactMap"))
 
 const white = "white"
@@ -30,6 +31,7 @@ const gradient = `linear-gradient(to bottom right, ${white}, ${gray}, ${white}, 
 
 // Recursively iterate through an element's children
 const iterateChildren = (element, callback) => {
+  if (!element) return
   callback(element)
   if (element.children) {
     for (let i = 0; i < element.children.length; i++) {
@@ -38,10 +40,15 @@ const iterateChildren = (element, callback) => {
   }
 }
 
-function exportToPdf() {
-  const element = document.getElementById("pdf-container")
+function exportToPdf(filename) {
+  const element = document.getElementById("printable")
   iterateChildren(element, (child) => {
+    if (child.tagName.toLowerCase() === "button") {
+      child.style.display = "none"
+    }
     child.style.color = "black"
+    child.style.textShadow = "none"
+    child.style.fontSize = `11px`
   })
   html2canvas(element).then((canvas) => {
     const imgData = canvas.toDataURL("image/png")
@@ -50,10 +57,7 @@ function exportToPdf() {
     const pdfWidth = pdf.internal.pageSize.getWidth() - 20
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
     pdf.addImage(imgData, "PNG", 10, 10, pdfWidth, pdfHeight)
-    pdf.save("Report.pdf")
-  })
-  iterateChildren(element, (child) => {
-    child.style.color = "white"
+    pdf.save(filename + ".pdf")
   })
 }
 
@@ -94,9 +98,13 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
   }
 
   const variant = dashboardId === -1 ? "closed" : "open"
-  const curHotspot = hotspots[dashboardId - 1]
+  const hotspotIndex = dashboardId - 1
+  const curHotspot = hotspots[hotspotIndex]
   const imageIndices = curHotspot?.imageIndices
+  const recommendations = curHotspot?.recommendations
   const imagesToShow = imageIndices?.map((i) => "images/" + images[i])
+
+  const [viewMoreImages, setViewMoreImages] = useState(false)
 
   return (
     <AnimatePresence exitBeforeEnter>
@@ -131,51 +139,73 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
             onClick={() => setDashboardId(-1)}
           />
           {!!curHotspot && (
-            <Box p={10} fontSize="xl" textShadow="0px 0px 20px rgba(0,0,0,0.5)">
+            <Box
+              p={10}
+              fontSize="xl"
+              textShadow="0px 0px 20px rgba(0,0,0,0.5)"
+              id="printable"
+              sx={{
+                "> p": { mt: 4 },
+              }}>
               <Heading as="h1">{curHotspot.title}</Heading>
-              <Box
-                id="printable"
-                sx={{
-                  "> p": { mt: 4 },
+              <Button
+                mt={4}
+                colorScheme="black"
+                variant="solid"
+                leftIcon={<Icon as={FaFilePdf} />}
+                onClick={() => {
+                  exportToPdf(curHotspot.title)
+                  setDashboardId(-1)
                 }}>
-                <Text>📡 Data from {curHotspot.boats.length} satellite ship photographs</Text>
-                <Text>
-                  📍 Centered at{" "}
-                  <b>
-                    {formatCoordinate(curHotspot.long, "N", "S")},&nbsp;{formatCoordinate(curHotspot.lat, "E", "W")}
-                  </b>
-                </Text>
-                <Text>
-                  📆 Data from <b>{curHotspot.minTime}</b> to <b>{curHotspot.maxTime}</b>
-                </Text>
-                <Text>
-                  🐟 Estimate <b>{curHotspot.totalTonsLost.toFixed(1)} tons</b> of fish lost in this area, including:
-                </Text>
-                <UnorderedList>
-                  {curHotspot.fish.map((fish, i) => {
-                    if (i > 2) return null
-                    else return <ListItem key={i}>{fish}</ListItem>
-                  })}
-                </UnorderedList>
-              </Box>
-              <Flex gap={2}>
-                <Button
-                  mt={4}
-                  colorScheme="blue"
-                  variant="solid"
-                  leftIcon={<Icon as={FaFilePdf} />}
-                  onClick={() => exportToPdf()}>
-                  Export Report to Coast Guard
-                </Button>
-              </Flex>
-              <Heading as="h2" mt={10}>
+                Export Report for Coast Guard
+              </Button>
+
+              <Text>📡 Data from {curHotspot.boats.length} satellite ship photographs</Text>
+              <Text>
+                📍 Centered at{" "}
+                <b>
+                  {formatCoordinate(curHotspot.long, "N", "S")},&nbsp;{formatCoordinate(curHotspot.lat, "E", "W")}
+                </b>
+              </Text>
+              <Text>
+                📆 Data from <b>{curHotspot.minTime}</b> to <b>{curHotspot.maxTime}</b>
+              </Text>
+              <Text>
+                🐟 Estimate <b>{curHotspot.totalTonsLost.toFixed(1)} tons</b> of fish lost in this area:
+              </Text>
+              <UnorderedList>
+                {curHotspot.fish.map((fish, i) => {
+                  if (i > 1) return null
+                  else return <ListItem key={i}>{fish}</ListItem>
+                })}
+              </UnorderedList>
+              <Heading as="h2" fontSize="3xl" mt={4}>
                 Raw Satellite Images
               </Heading>
               <Grid mt={4} bg="black" templateColumns="repeat(5, 1fr)" gap={0.5}>
-                {imagesToShow.map((image, i) => (
+                {imagesToShow.slice(0, viewMoreImages ? 1000 : 5).map((image, i) => (
                   <Image src={image} />
                 ))}
               </Grid>
+              <Button
+                mt={4}
+                leftIcon={viewMoreImages ? <MinusIcon /> : <AddIcon />}
+                colorScheme="black"
+                onClick={() => setViewMoreImages(!viewMoreImages)}>
+                {viewMoreImages ? "Show Less" : "Show " + (imagesToShow.length - 5) + " more images"}
+              </Button>
+              <Heading as="h2" fontSize="3xl" mt={4}>
+                Recommendations
+              </Heading>
+              <UnorderedList>
+                {recommendations.map((rec, i) => {
+                  return (
+                    <ListItem mt={4} key={i}>
+                      {rec}
+                    </ListItem>
+                  )
+                })}
+              </UnorderedList>
             </Box>
           )}
         </Box>

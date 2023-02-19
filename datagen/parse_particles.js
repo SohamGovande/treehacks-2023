@@ -3,6 +3,9 @@ import fs from "fs"
 const boats = JSON.parse(
   fs.readFileSync("/Users/sohamgovande/Documents/code/treehacks-2023/datagen/boatclustersdata.json", "utf8")
 )
+const recommendations = JSON.parse(
+  fs.readFileSync("/Users/sohamgovande/Documents/code/treehacks-2023/site/assets/recommendations.json", "utf8")
+)
 const geographies = JSON.parse(
   fs.readFileSync("/Users/sohamgovande/Documents/code/treehacks-2023/site/assets/geographies.json", "utf8")
 )
@@ -46,11 +49,26 @@ for (let i = 0; i < clusters.length; i++) {
   })
   const { fish, title } = closest
 
-  clusters[i] = { ...cluster, minTime, maxTime, totalTonsLost, fish, title, long: closest.long, lat: closest.lat }
+  clusters[i] = {
+    ...cluster,
+    minTime,
+    maxTime,
+    totalTonsLost,
+    fish,
+    title,
+    recommendations: closest.recommendations,
+    long: closest.long,
+    lat: closest.lat,
+  }
 }
 
 // Sort clusters by totalTonsLost
 clusters.sort((a, b) => b.boats.length - a.boats.length)
+
+clusters.splice(6, 1000)
+for (let i = 0; i < clusters.length; i++) {
+  clusters[i].warningLevel = recommendations[i]
+}
 
 // Sum of total boats in all clusters
 const totalBoats = clusters.reduce((a, b) => a + b.boats.length, 0)
