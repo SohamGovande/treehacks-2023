@@ -127,7 +127,7 @@ function Home() {
   }
 
   useEffect(() => {
-    if (scrollCounter < END_THRESHOLD - END_THRESHOLD_BUFFER) {
+    if (scrollCounter < END_THRESHOLD) {
       setShowMap(true)
     }
   }, [scrollCounter])
@@ -148,10 +148,18 @@ function Home() {
         <title>ShipSense.AI - Reduce overfishing</title>
       </Head>
 
-      <MapPageContents />
+      <Box as={motion.div} pos="absolute" top={0} left={0} w="100vw" h="100vh">
+        <MapPageContents />
+      </Box>
+
       <AnimatePresence>
-        {!true && (
-          <motion.div key="landingPageWrapper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        {!showMap && (
+          <motion.div
+            key="landingPageWrapper"
+            transition={{ duration: 1 }}
+            initial={{ filter: "brightness(1)" }}
+            animate={{ filter: "brightness(1)" }}
+            exit={{ filter: "brightness(0)" }}>
             <Box w="100vw" h="100vh" bg="black" color="white">
               {!ssr && (
                 <div style={{ justifyContent: "center" }}>
@@ -159,7 +167,6 @@ function Home() {
                 </div>
               )}
             </Box>
-
             <Flex
               as={motion.div}
               transition={{ duration: 0 }}
