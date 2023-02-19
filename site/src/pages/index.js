@@ -86,7 +86,7 @@ function Home() {
     en: {
       language: "English",
       ShipSense: "ShipSense",
-      "300 billion fish are caught illegally": "200 billion fish are caught illegally",
+      "300 billion fish are caught illegally": "Mitigate overfishing with AI-augmented satellite imagery",
       "What we're shipping": "What we're shipping",
     },
     fr: {
@@ -175,7 +175,7 @@ function Home() {
               transition={{ duration: 0 }}
               animate={{ opacity: calculateTextOpacity(scrollCounter) }}
               align="center"
-              justify="center"
+              justify={{ base: "start", md: "center" }}
               textAlign="center"
               direction="column"
               w="100vw"
@@ -185,7 +185,7 @@ function Home() {
               top={0}
               color="white"
               left={0}>
-              <Flex direction={{ base: "column", md: "row" }} gap={{ base: 2, md: 6 }}>
+              <Flex mt={10} direction={{ base: "column", md: "row" }} gap={{ base: 2, md: 6 }}>
                 {Object.keys(translations).map((lang) => (
                   <Button
                     key={lang}
@@ -211,7 +211,7 @@ function Home() {
                 textAlign="center"
                 fontSize={{ base: "3xl", md: "5xl" }}
                 textShadow="0px 0px 10px rgba(0,0,0,1)"
-                minH="3em"
+                minH={{ base: "3em", md: "2em" }}
                 display="block">
                 <CustomTypewriterEffect
                   key={language}
@@ -225,6 +225,10 @@ function Home() {
                   overallIterations={10}
                 />
               </Heading>
+              <Button size="lg" pointerEvents="initial" colorScheme="purple" onClick={() => setShowMap(true)}>
+                Get Started
+              </Button>
+
               <motion.div
                 style={{
                   position: "absolute",
