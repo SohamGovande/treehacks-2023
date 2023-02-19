@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react"
+import React, { useState, useEffect, useMemo, useRef } from "react"
 import ReactDOM from "react-dom"
 import Globe from "react-globe.gl"
 import countries from "../files/custom.geo.json"
 import { useToken } from "@chakra-ui/react"
-import cablesGeo from '@/utils/cablegeo.json'
+import cablesGeo from "@/utils/cablegeo.json"
 
 const color = "purple"
 
@@ -18,12 +18,6 @@ const World = () => {
   const [cablePaths, setCablePaths] = useState([])
 
   const N = 300
-  const gData = [...Array(N).keys()].map(() => ({
-    lat: (Math.random() - 0.5) * 180,
-    lng: (Math.random() - 0.5) * 360,
-    size: Math.random() / 3,
-    color: ["red"],
-  }))
 
   useEffect(() => {
     // from https://www.submarinecablemap.com
@@ -34,7 +28,20 @@ const World = () => {
     setCablePaths(cablePaths)
   }, [])
 
-  const [pathPointAlt, setPathPointAlt] = useState(0.01)
+  const globeRef = useRef()
+  const [counter, setCounter] = useState(0)
+  const [key, setKey] = useState(0)
+
+  useEffect(() => {
+    // Check if the key R is pressed, if so, reset the globe
+    const handleKeyDown = (e) => {
+      if (e.key === "r") {
+        setKey(i => i + 1)
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
 
   useEffect(() => {
     const renderGlobe = () => {
@@ -64,9 +71,9 @@ const World = () => {
       )
     }
     renderGlobe()
-  }, [countries, cablePaths])
+  }, [countries, cablePaths, key])
 
-  return <div id="globeViz"></div>
+  return <div key={key} id="globeViz" ref={globeRef}></div>
 }
 
 export default World
