@@ -26,6 +26,7 @@ const World = () => {
 
   useEffect(() => {
     // from https://www.submarinecablemap.com
+    console.log('fetching cables...')
     fetch(
       '//api.allorigins.win/get?url=https://www.submarinecablemap.com/api/v3/cable/cable-geo.json',
     )
@@ -37,7 +38,7 @@ const World = () => {
             cablePaths.push({ coords, properties }),
           )
         })
-
+        console.log('loaded cables')
         setCablePaths(cablePaths)
       })
   }, [])
@@ -46,8 +47,8 @@ const World = () => {
     const renderGlobe = () => {
       ReactDOM.render(
         <Globe
-          pointsData={gData}
-          pointAltitude={0}
+          //   pointsData={gData}
+          //   pointAltitude={0}
           globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
           bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
           backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
@@ -55,8 +56,7 @@ const World = () => {
           pathPoints="coords"
           pathPointLat={(p) => p[1]}
           pathPointLng={(p) => p[0]}
-          pathColor={(path) => path.properties.color}
-          pathLabel={(path) => path.properties.name}
+          pathColor={() => 'rgba(137, 196, 244, 1)'}
           pathDashLength={0.1}
           pathDashGap={0.008}
           pathDashAnimateTime={12000}
@@ -65,16 +65,12 @@ const World = () => {
           hexPolygonMargin={0.3}
           animateIn={true}
           hexPolygonColor={() => gradient[Math.floor(Math.random() * 10)]}
-          hexPolygonLabel={({ properties: d }) => `
-            <b>${d.ADMIN} (${d.ISO_A2})</b> <br />
-            Population: <i>${d.POP_EST}</i>
-          `}
         />,
         document.getElementById('globeViz'),
       )
     }
     renderGlobe()
-  }, [countries])
+  }, [countries, cablePaths])
 
   return <div id="globeViz"></div>
 }
