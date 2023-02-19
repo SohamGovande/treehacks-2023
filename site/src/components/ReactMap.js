@@ -3,22 +3,12 @@ import { Map, WebMap } from "@esri/react-arcgis"
 import { useEffect, useMemo, useRef, useState } from "react"
 import convexhull from "@/utils/convexhull"
 import kmeansAsync from "@/utils/kmeans"
+import { useData } from "@/contexts/DataContext"
 
 const INITIAL_WINDOW_LOCATION = [114.4048, 15.4881]
-
-const generateRandomPoints = (n, maxRadius, long, lat) => {
-  const cluster = []
-  for (let i = 0; i < n; i++) {
-    // Generate a random angle between 0 and 2π
-    const angle = Math.random() * 2 * Math.PI
-    // Generate a random radius between 0 and the radius
-    const radius = Math.random() * maxRadius
-    const x = long + radius * Math.cos(angle)
-    const y = lat + radius * Math.sin(angle)
-    cluster.push([x, y])
-  }
-  return cluster
-}
+const OPAQUE_COLOR = [53, 175, 247, 1]
+const TRANSPARENT_COLOR = [53, 175, 247, 0.6]
+const POINT_COLOR = [255, 255, 255, 1]
 
 const generateConvexHillPolygonRings = (points) => {
   const pointsXY = points.map((p) => ({ x: p[0], y: p[1] }))
@@ -76,10 +66,10 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
     // Create a symbol for rendering the graphic
     const fillSymbol = {
       type: "simple-fill", // autocasts as new SimpleFillSymbol()
-      color: [200, 0, 0, 0.2],
+      color: TRANSPARENT_COLOR,
       outline: {
         // autocasts as new SimpleLineSymbol()
-        color: [200, 0, 0, 1],
+        color: OPAQUE_COLOR,
         width: 1,
       },
     }
@@ -120,8 +110,8 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
           type: "simple-fill",
           style: "none",
           outline: {
-            width: 3,
-            color: "red",
+            width: 2,
+            color: POINT_COLOR,
           },
         },
       })
@@ -148,14 +138,13 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
   return null
 }
 
-const cluster = generateRandomPoints(50, 4, INITIAL_WINDOW_LOCATION[0], INITIAL_WINDOW_LOCATION[1])
-
 export default function ReactMap({ onViewDashboard }) {
   const [clusters, setClusters] = useState([])
+  const { detections } = useData()
   const onLoad = async () => {}
 
   const createClusters = async () => {
-    const results = await kmeansAsync(cluster, {
+    const results = await kmeansAsync(detections, {
       k: 3,
     })
     setClusters(results.map((result) => result.cluster))
