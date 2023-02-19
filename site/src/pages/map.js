@@ -6,7 +6,8 @@ export default function MapPage({ hotspots }) {
 }
 
 export const getStaticProps = async () => {
-  const hotspots = require('../../assets/hotspots.json')
+  let hotspots = require('../../assets/hotspots.json')
+  hotspots = [hotspots[9]]
   return {
     props: {
       hotspots
