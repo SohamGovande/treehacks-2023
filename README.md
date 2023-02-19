@@ -8,6 +8,9 @@
 
 ## Data analysis on dark vessels and hotspots of potentially illicit activity using AIS data.
 
+![image](homepagescreenshot.png)
+
+
 _Everything in this project was completed during TreeHacks._
 _By the way, we've included lots of hidden fishy puns in our writeup!  Comment how many you find!_
 
