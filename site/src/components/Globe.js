@@ -3,10 +3,7 @@ import ReactDOM from "react-dom"
 import Globe from "react-globe.gl"
 import countries from "../files/custom.geo.json"
 import { useToken } from "@chakra-ui/react"
-const cablesGeo = JSON.parse(require('@/utils/cablegeo.json').contents)
-if (typeof window === "undefined") {
-  require('fs').writeFileSync('/Users/sohamgovande/Documents/code/treehacks-2023/site/src/utils/cablegeo2.json', JSON.stringify(cablesGeo))
-}
+import cablesGeo from '@/utils/cablegeo.json'
 
 const color = "purple"
 
