@@ -13,6 +13,7 @@ import {
   Icon,
   Grid,
   Image,
+  useBreakpointValue,
 } from "@chakra-ui/react"
 import Head from "next/head"
 import { lazy, useEffect, useRef, useState } from "react"
@@ -85,7 +86,7 @@ function shuffle(array) {
 
 const Sidebar = ({ dashboardId, setDashboardId }) => {
   const canvasRef = useRef(null)
-
+  const isMobile = useBreakpointValue({ base: true, md: false })
   const { hotspots, images } = useData()
   useEffect(() => {
     const gradient = new Gradient()
@@ -120,7 +121,7 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
           top: 0,
           left: 0,
           bottom: 0,
-          width: "40%",
+          width: isMobile ? "100%" : "40%",
           color: "white",
           boxShadow: "10px 0px 30px rgba(0,0,0,0.75)",
         }}>

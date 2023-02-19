@@ -147,6 +147,8 @@ export default function ReactMap({ onViewDashboard }) {
       viewProperties={{
         center: INITIAL_WINDOW_LOCATION,
         zoom: 5,
+        minZoom: 3,
+        maxZoom: 10,
       }}
       onLoad={onLoad}>
       {hotspots.map((data, i) => (

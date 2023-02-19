@@ -86,22 +86,19 @@ function Home() {
     en: {
       language: "English",
       ShipSense: "ShipSense",
-      "Let's get reel...": "Let's get reel...",
-      "300 billion fish are caught illegally": "300 billion fish are caught illegally",
+      "300 billion fish are caught illegally": "200 billion fish are caught illegally",
       "What we're shipping": "What we're shipping",
     },
     fr: {
       language: "Français",
       ShipSense: "AspectBateau",
-      "Let's get reel...": "Soyons sérieux...",
-      "300 billion fish are caught illegally": "300 milliards de poissons sont pêchés illégalement",
+      "300 billion fish are caught illegally": "200 milliards de poissons sont pêchés illégalement",
       "What we're shipping": "Ce que nous expédions",
     },
     es: {
       language: "Español",
       ShipSense: "Mirada de Barco",
-      "Let's get reel...": "Seamos sinceros...",
-      "300 billion fish are caught illegally": "300 mil millones de peces son capturados ilegalmente",
+      "300 billion fish are caught illegally": "200 mil millones de peces son capturados ilegalmente",
       "What we're shipping": "Lo que estamos enviando",
     },
     ch: {
@@ -146,6 +143,12 @@ function Home() {
     <>
       <Head>
         <title>ShipSense.AI - Reduce overfishing</title>
+        {/* Add OG title and description */}
+        <meta property="og:title" content="ShipSense.AI - Reduce overfishing with computer vision algorithms" />
+        <meta
+          property="og:description"
+          content="Mitigating overfishing through AI-augmented satellite imagery and data viz platform. Novel few-shot synthetic image data augmentation method using fine-tuned Stable Diffusion for any object."
+        />
       </Head>
 
       <Box as={motion.div} pos="absolute" top={0} left={0} w="100vw" h="100vh">
@@ -182,7 +185,7 @@ function Home() {
               top={0}
               color="white"
               left={0}>
-              <Flex direction="row" gap={10}>
+              <Flex direction={{ base: "column", md: "row" }} gap={{ base: 2, md: 6 }}>
                 {Object.keys(translations).map((lang) => (
                   <Button
                     key={lang}
@@ -197,7 +200,7 @@ function Home() {
                   </Button>
                 ))}
               </Flex>
-              <Heading as="h1" fontWeight="900" fontSize="10em" textAlign="center">
+              <Heading as="h1" fontWeight="900" fontSize={{ base: "4em", md: "10em" }} textAlign="center">
                 {translations[language].ShipSense}
               </Heading>
               <Heading
@@ -206,14 +209,13 @@ function Home() {
                 fontFamily="body"
                 justifyContent="center"
                 textAlign="center"
-                fontSize="5xl"
+                fontSize={{ base: "3xl", md: "5xl" }}
                 textShadow="0px 0px 10px rgba(0,0,0,1)"
-                minH="1.5em"
+                minH="3em"
                 display="block">
                 <CustomTypewriterEffect
                   key={language}
                   strings={[
-                    translations[language]["Let's get reel..."],
                     translations[language]["300 billion fish are caught illegally"],
                     translations[language]["What we're shipping"],
                   ]}
@@ -253,12 +255,12 @@ export default function DataWrapper(props) {
 
 export const getStaticProps = async () => {
   let hotspots = require("../../assets/hotspots.json")
-  let images = require('fs').readdirSync("./public/images/")
-  
+  let images = require("fs").readdirSync("./public/images/")
+
   return {
     props: {
       hotspots,
-      images
+      images,
     },
   }
 }
