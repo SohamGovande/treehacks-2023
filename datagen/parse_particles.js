@@ -1,16 +1,10 @@
-import fs from 'fs'
+import fs from "fs"
 
 const boats = JSON.parse(
-  fs.readFileSync(
-    '/Users/sohamgovande/Documents/code/treehacks-2023/datagen/boatclustersdata.json',
-    'utf8',
-  ),
+  fs.readFileSync("/Users/sohamgovande/Documents/code/treehacks-2023/datagen/boatclustersdata.json", "utf8")
 )
 const geographies = JSON.parse(
-  fs.readFileSync(
-    '/Users/sohamgovande/Documents/code/treehacks-2023/site/assets/geographies.json',
-    'utf8',
-  ),
+  fs.readFileSync("/Users/sohamgovande/Documents/code/treehacks-2023/site/assets/geographies.json", "utf8")
 )
 
 const nClusters = Math.max(...boats.map((c) => c.cluster)) + 1
@@ -46,14 +40,8 @@ for (let i = 0; i < clusters.length; i++) {
   const totalTonsLost = cluster.boats.reduce((a, b) => a + b.tons_fish, 0)
   // Find the geography object with the closest distance (latitude and longitude) using Euclidean distance
   const closest = geographies.reduce((a, b) => {
-    const distA = Math.sqrt(
-      (a.lat - cluster.boats[0].lat) ** 2 +
-        (a.long - cluster.boats[0].long) ** 2,
-    )
-    const distB = Math.sqrt(
-      (b.lat - cluster.boats[0].lat) ** 2 +
-        (b.long - cluster.boats[0].long) ** 2,
-    )
+    const distA = Math.sqrt((a.lat - cluster.boats[0].lat) ** 2 + (a.long - cluster.boats[0].long) ** 2)
+    const distB = Math.sqrt((b.lat - cluster.boats[0].lat) ** 2 + (b.long - cluster.boats[0].long) ** 2)
     return distA < distB ? a : b
   })
   const { fish, title } = closest
@@ -69,14 +57,15 @@ const totalBoats = clusters.reduce((a, b) => a + b.boats.length, 0)
 const nImages = 500
 
 // Assign each cluster a number of images, proportional to the number of boats in the cluster
+// The images are stored in a directory "images/x.png", where x is a number from 1 to 500
 for (let i = 0; i < clusters.length; i++) {
   const cluster = clusters[i]
-  const n = Math.round((cluster.boats.length / totalBoats) * nImages)
-  const imagePaths = []
-  for (let j = 0; j < n; j++) {
-    imagePaths.push(`images/${n}.jpg`)
+  const imageIndices = []
+  for (let j = 0; j < Math.floor((cluster.boats.length / totalBoats) * nImages); j++) {
+    imageIndices.push(j)
   }
-  clusters[i] = { ...cluster, imagePaths }
+
+  clusters[i] = { ...cluster, imageIndices }
 }
 
 // Create a gradient effect between any two colors and a given progress value
@@ -101,9 +90,6 @@ for (let i = 0; i < clusters.length; i++) {
   clusters[i].transparentColor = [...ytr[i], 0.5]
 }
 
-fs.writeFileSync(
-  '/Users/sohamgovande/Documents/code/treehacks-2023/site/assets/hotspots.json',
-  JSON.stringify(clusters),
-)
+fs.writeFileSync("/Users/sohamgovande/Documents/code/treehacks-2023/site/assets/hotspots.json", JSON.stringify(clusters))
 
 let ddd = false
