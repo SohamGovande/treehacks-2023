@@ -28,6 +28,8 @@ min: 12.0
 75%: 40.90951388888889
 max: 146.13916666666665
 
+On average, ships spend about 34 hours hidden from AIS radar when they disappear.
+
 ## Vessel Tonnage:
 mean       857.755972
 std        711.376427
