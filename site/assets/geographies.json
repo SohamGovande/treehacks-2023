@@ -1,63 +1,76 @@
 [
   {
-    "title": "Bay of Bengal",
-    "long": 86.586036,
-    "lat": 14.872533,
+    "title": "Falkland Islands",
+    "long": -59.523613,
+    "lat": -51.796253,
     "fish": [
-      "Hilsa (Tenualosa ilisha)",
-      "Ribbonfish (Trichiurus lepturus)",
-      "Sardine (Sardinella spp.)",
-      "Indian mackerel (Rastrelliger kanagurta)",
-      "Tuna (Thunnus spp.)",
-      "Prawn (Penaeus spp.)",
-      "Catfish (Pangasius pangasius)",
-      "Squid (Loligo spp.)",
-      "Silver pomfret (Pampus argenteus)",
-      "Threadfin bream (Nemipterus spp.)",
-      "Barramundi (Lates calcarifer)",
-      "Mud crab (Scylla spp.)",
-      "Seer fish (Scomberomorus spp.)",
-      "Yellowfin tuna (Thunnus albacares)",
-      "Grouper (Epinephelus spp.)"
+      "Falkland hake (Merluccius hubbsi)",
+      "Illex squid (Illex argentinus)",
+      "Patagonian toothfish (Dissostichus eleginoides)"
+    ],
+    "recommendations": [
+      "Establishing a marine protected area: The Falkland Islands are a valuable fishing ground for many species, including the Patagonian toothfish. Creating a marine protected area around the islands could help to protect this species from overfishing and promote sustainable fishing practices.",
+      "Promoting responsible fishing practices: The government of the Falkland Islands could work with fishing companies to encourage sustainable fishing practices, such as using selective fishing gear and reducing bycatch.",
+      "Enforcing regulations: The government of the Falkland Islands could increase enforcement of existing fishing regulations to ensure that fishing activities are sustainable and legal."
     ]
   },
   {
-    "title": "South China Sea",
-    "long": 113.5,
-    "lat": 10.5,
+    "title": "Aleutian Islands",
+    "long": -175.331776,
+    "lat": 51.936949,
     "fish": [
-      "Mackerel (Scomber spp.)",
-      "Tuna (Thunnus spp.)",
-      "Sardine (Sardinella spp.)",
-      "Skipjack tuna (Katsuwonus pelamis)",
-      "Squid (Loligo spp.)",
-      "Threadfin (Eleutheronema tetradactylum)",
-      "Barracuda (Sphyraena spp.)",
-      "Yellowfin tuna (Thunnus albacares)",
-      "Shrimp (Penaeus spp.)",
-      "Grouper (Epinephelus spp.)",
-      "Sea bass (Lates calcarifer)",
-      "Crab (Portunus spp.)",
-      "Red snapper (Lutjanus spp.)",
-      "Prawn (Penaeus spp.)",
-      "Trevally (Caranx spp.)"
+      "Walleye pollock (Gadus chalcogrammus)",
+      "Pacific cod (Gadus macrocephalus)",
+      "Atka mackerel (Pleurogrammus monopterygius)"
+    ],
+    "recommendations": [
+      "Establishing a bycatch reduction program: The Aleutian Islands are home to many species of marine mammals, including Steller sea lions and sea otters. Implementing a bycatch reduction program for fisheries operating in the area could help to reduce the incidental capture of these species.",
+      "Encouraging sustainable fishing practices: The government of the Aleutian Islands could work with fishing companies to encourage the use of sustainable fishing practices, such as reducing the amount of gear lost at sea and reducing the amount of unwanted catch.",
+      "Working with neighboring countries: The Aleutian Islands are located near the coast of Russia, and many of the same fish species are found in the waters of both countries. Working with Russia to establish sustainable fishing practices and shared conservation goals could benefit both countries and protect the marine environment."
     ]
   },
   {
-    "title": "Japan",
-    "long": 139.5,
-    "lat": 36.5,
-    "fish": [
-      "Tuna (Maguro)",
-      "Yellowtail (Buri or Hamachi)",
-      "Mackerel (Saba)",
-      "Eel (Unagi or Anago)",
-      "Salmon (Sake)",
-      "Cod (Tara)",
-      "Halibut (Ohyo)",
-      "Sea bream (Tai)",
-      "Squid (Ika)",
-      "Octopus (Tako)"
+    "title": "West African Coast",
+    "long": -16.18301,
+    "lat": 12.280983,
+    "fish": ["Sardine (Sardinella spp.)", "Tuna (Thunnus spp.)", "Mackerel (Scomber scombrus)"],
+    "recommendations": [
+      "Reducing overcapacity: The West African coast is home to many small-scale fisheries, but overcapacity is a problem in some areas. Encouraging the development of sustainable small-scale fisheries and reducing the number of large-scale fishing vessels could help to reduce pressure on fish stocks.",
+      "Addressing illegal, unreported, and unregulated fishing: Illegal, unreported, and unregulated fishing is a significant problem on the West African coast. Increasing enforcement of fishing regulations and implementing measures to prevent illegal fishing activities could help to promote sustainable fishing practices.",
+      "Working with neighboring countries: The West African coast is home to many countries with different fishing interests and regulations. Working with neighboring countries to establish shared conservation goals and promote sustainable fishing practices could benefit the entire region."
+    ]
+  },
+  {
+    "title": "East of Madagascar",
+    "long": 50.957028,
+    "lat": -19.218331,
+    "fish": ["Tuna (Thunnus spp.)", "Swordfish (Xiphias gladius)", "Marlin (Makaira spp.)"],
+    "recommendations": [
+      "Implementing a vessel monitoring system: The waters east of Madagascar are a valuable fishing ground for many species, including tuna and swordfish. Implementing a vessel monitoring system could help to monitor fishing activities and ensure that they are sustainable and legal.",
+      "Protecting spawning and nursery areas: Many of the fish species found east of Madagascar use the area for spawning and nursery habitat. Protecting these areas from fishing activities during critical times of the year could help to promote sustainable fishing practices.",
+      "Reducing bycatch: The fishing gear used to catch tuna and swordfish can also catch other species, such as sharks and sea turtles. Encouraging the use of selective fishing gear and reducing the amount of unwanted catch could help to reduce the impact of fishing on these species."
+    ]
+  },
+  {
+    "title": "East of Japan",
+    "long": 143.321365,
+    "lat": 38.419357,
+    "fish": ["Sardine (Sardinops melanostictus)", "Squid (Todarodes pacificus)", "Pacific saury (Cololabis saira)"],
+    "recommendations": [
+      "Reducing overcapacity: The waters east of Japan are home to many small-scale and large-scale fishing vessels. Encouraging the development of sustainable small-scale fisheries and reducing the number of large-scale fishing vessels could help to reduce pressure on fish stocks.",
+      "Addressing illegal, unreported, and unregulated fishing: Illegal, unreported, and unregulated fishing is a significant problem in the region. Increasing enforcement of fishing regulations and implementing measures to prevent illegal fishing activities could help to promote sustainable fishing practices.",
+      "Working with neighboring countries: The waters east of Japan are shared by many countries with different fishing interests and regulations. Working with neighboring countries to establish shared conservation goals and promote sustainable fishing practices could benefit the entire region."
+    ]
+  },
+  {
+    "title": "Solomon Islands",
+    "long": 160.156194,
+    "lat": -9.64571,
+    "fish": ["Skipjack tuna (Katsuwonus pelamis)", "Yellowfin tuna (Thunnus albacares)", "Wahoo (Acanthocybium solandri)"],
+    "recommendations": [
+      "Establishing a marine protected area: The Solomon Islands are a valuable fishing ground for many species, including tuna. Creating a marine protected area around the islands could help to protect these species from overfishing and promote sustainable fishing practices.",
+      "Encouraging sustainable fishing practices: The government of the Solomon Islands could work with fishing companies to encourage sustainable fishing practices, such as reducing the amount of gear lost at sea and reducing the amount of unwanted catch.",
+      "Working with neighboring countries: The Solomon Islands are located near the coast of Papua New Guinea, and many of the same fish species are found in the waters of both countries. Working with Papua New Guinea to establish sustainable fishing practices and shared conservation goals could benefit both countries and protect the marine environment."
     ]
   }
 ]

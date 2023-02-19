@@ -56,13 +56,33 @@ clusters.sort((a, b) => b.boats.length - a.boats.length)
 const totalBoats = clusters.reduce((a, b) => a + b.boats.length, 0)
 const nImages = 500
 
+function shuffle(array) {
+  let currentIndex = array.length,
+    randomIndex
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex--
+
+    // And swap it with the current element.
+    ;[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
+  }
+
+  return array
+}
+
+const zeroToNShuffled = [...Array(nImages).keys()]
+shuffle(zeroToNShuffled)
+
 // Assign each cluster a number of images, proportional to the number of boats in the cluster
 // The images are stored in a directory "images/x.png", where x is a number from 1 to 500
 for (let i = 0; i < clusters.length; i++) {
   const cluster = clusters[i]
   const imageIndices = []
   for (let j = 0; j < Math.floor((cluster.boats.length / totalBoats) * nImages); j++) {
-    imageIndices.push(j)
+    imageIndices.push(zeroToNShuffled.pop())
   }
 
   clusters[i] = { ...cluster, imageIndices }

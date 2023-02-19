@@ -243,9 +243,9 @@ function Home() {
   )
 }
 
-export default function DataWrapper({ hotspots }) {
+export default function DataWrapper(props) {
   return (
-    <DataProvider hotspots={hotspots}>
+    <DataProvider {...props}>
       <Home />
     </DataProvider>
   )
@@ -253,9 +253,12 @@ export default function DataWrapper({ hotspots }) {
 
 export const getStaticProps = async () => {
   let hotspots = require("../../assets/hotspots.json")
+  let images = require('fs').readdirSync("./public/images/")
+  
   return {
     props: {
       hotspots,
+      images
     },
   }
 }

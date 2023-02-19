@@ -1,16 +1,18 @@
 import MapPageContents from "@/components/MapPageContents";
 import { DataProvider } from "@/contexts/DataContext";
 
-export default function MapPage({ hotspots }) {
-  return <DataProvider hotspots={hotspots}><MapPageContents /></DataProvider>;
+export default function MapPage(props) {
+  return <DataProvider {...props}><MapPageContents /></DataProvider>;
 }
 
 export const getStaticProps = async () => {
-  let hotspots = require('../../assets/hotspots.json')
-  hotspots = [hotspots[9]]
+  let hotspots = require("../../assets/hotspots.json")
+  let images = require('fs').readdirSync("./public/images/")
+  
   return {
     props: {
-      hotspots
+      hotspots,
+      images
     },
   }
 }
