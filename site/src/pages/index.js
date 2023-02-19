@@ -8,8 +8,26 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import MapPageContents from '@/components/MapPageContents'
 import * as nookies from 'nookies'
+import Lottie from 'lottie-react'
+import animationData from '../files/animationData.json'
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const World = lazy(() => import('../components/Globe'))
+
+function exportToPdf() {
+  const element = document.getElementById('pdf-container');
+
+  html2canvas(element).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF();
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
+    pdf.save('document.pdf');
+  });
+}
 
 const CustomTypewriterEffect = ({
   strings,
@@ -118,7 +136,7 @@ export default function Home() {
     if (e.deltaY === 0) {
       return
     }
-    setScrollCounter((prev) => prev + e.deltaY)
+    setScrollCounter((prev) => prev + (e.deltaY / Math.abs(e.deltaY)) * 25)
   }
 
   useEffect(() => {
@@ -155,21 +173,24 @@ export default function Home() {
 
       <Flex
         as={motion.div}
-        color={`rgba(255,255,255,${calculateTextOpacity(scrollCounter)})`}
+        animate={{ opacity: calculateTextOpacity(scrollCounter) }}
         align="center"
         justify="center"
         textAlign="center"
         direction="column"
         w="100vw"
+        pointerEvents="none"
         h="100vh"
         pos="absolute"
         top={0}
         left={0}
       >
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <Flex direction="row" gap={10}>
           {Object.keys(translations).map((lang) => (
             <Button
+              key={lang}
               size="lg"
+              pointerEvents={'initial'}
               textShadow="0px 0px 10px rgba(0,0,0,1)"
               colorScheme="blackAlpha"
               color="white"
@@ -179,10 +200,10 @@ export default function Home() {
               {translations[lang].language}
             </Button>
           ))}
-          <Heading as="h1" fontWeight="900" fontSize="10em" textAlign="center">
-            ShipSense
-          </Heading>
-        </motion.div>
+        </Flex>
+        <Heading as="h1" fontWeight="900" fontSize="10em" textAlign="center">
+          {translations[language].ShipSense}
+        </Heading>
         <Heading
           as="h2"
           fontWeight="400"
@@ -217,9 +238,10 @@ export default function Home() {
             zIndex: 1,
             pointerEvents: 'none',
           }}
-          animate={{ backgroundColor: isRouting ? '#000000FF' : '#00000000' }}
+          animate={{ backgroundColor: isRouting ? '#000000FF' : '#00000000'}}
           transition={{ duration: 0.5 }}
-        />
+        >
+        </motion.div>
       </Flex>
     </>
   )

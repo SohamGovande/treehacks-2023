@@ -10,17 +10,49 @@ import {
   Button,
   ButtonGroup,
   IconButton,
-} from "@chakra-ui/react"
-import Head from "next/head"
-import { lazy, useEffect, useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import { CloseIcon, LinkIcon } from "@chakra-ui/icons"
+} from '@chakra-ui/react'
+import Head from 'next/head'
+import { lazy, useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { CloseIcon, LinkIcon } from '@chakra-ui/icons'
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
 
-const LazyMap = lazy(() => import("@/components/ReactMap"))
+const LazyMap = lazy(() => import('@/components/ReactMap'))
 
-const white = "white"
-const gray = "#f1f1f1"
+const white = 'white'
+const gray = '#f1f1f1'
 const gradient = `linear-gradient(to bottom right, ${white}, ${gray}, ${white}, ${gray}, ${white}, ${gray})`
+
+// Recursively iterate through an element's children
+const iterateChildren = (element, callback) => {
+  callback(element)
+  if (element.children) {
+    for (let i = 0; i < element.children.length; i++) {
+      iterateChildren(element.children[i], callback)
+    }
+  }
+}
+
+function exportToPdf() {
+  const element = document.getElementById('pdf-container')
+  iterateChildren(element, (child) => {
+    child.style.color = 'black'
+  })
+  html2canvas(element).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png')
+    const pdf = new jsPDF()
+    const imgProps = pdf.getImageProperties(imgData)
+    const pdfWidth = pdf.internal.pageSize.getWidth() - 20
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
+    pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight)
+    pdf.save('document.pdf')
+  })
+  iterateChildren(element, (child) => {
+    child.style.color = 'white'
+  })
+
+}
 
 const Sidebar = ({ dashboardId, setDashboardId }) => {
   return (
@@ -28,32 +60,34 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
       {dashboardId !== -1 && (
         <motion.div
           transition={{
-            ease: "easeInOut",
+            ease: 'easeInOut',
           }}
-          initial={{ x: "-100%", opacity: 0 }}
-          animate={{ x: "0%", opacity: 1 }}
-          exit={{ x: "-100%", opacity: 0 }}
+          initial={{ x: '-100%', opacity: 0 }}
+          animate={{ x: '0%', opacity: 1 }}
+          exit={{ x: '-100%', opacity: 0 }}
           style={{
-            position: "absolute",
+            position: 'absolute',
             top: 0,
             left: 0,
             bottom: 0,
-            width: "40%",
+            width: '40%',
             backgroundImage: "url('/hotspot.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            color: 'white'
-          }}>
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            color: 'white',
+          }}
+        >
           <IconButton
             position="absolute"
             top={10}
             right={8}
-            variant='unstyled'
+            variant="unstyled"
             aria-label="Close"
             icon={<CloseIcon />}
             onClick={() => setDashboardId(-1)}
           />
           <Box p={10} fontSize="xl">
+            <Box id="pdf-container">
             <Heading as="h1">Hotspot #{dashboardId}</Heading>
             <Text mt={4}>
               Centered at <b>40.7128° N, 74.0060° W</b>
@@ -73,8 +107,15 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
               Raw Data Points
             </Heading>
             [insert images here]
+            </Box>
             <Flex gap={2}>
-              <Button mt={4} colorScheme="blue" variant="solid" leftIcon={<LinkIcon />} onClick={() => onExport(id)}>
+              <Button
+                mt={4}
+                colorScheme="blue"
+                variant="solid"
+                leftIcon={<LinkIcon />}
+                onClick={() => exportToPdf()}
+              >
                 Export Report to Coast Guard
               </Button>
             </Flex>
@@ -86,7 +127,7 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
 }
 
 const VignetteEffect = ({ to }) => {
-  const white = useToken("colors", "blackAlpha.600")
+  const white = useToken('colors', 'blackAlpha.600')
   const size = 15
   return (
     <chakra.div
@@ -105,12 +146,8 @@ export default function MapPageContents() {
   const [dashboardId, setDashboardId] = useState(-1)
   const [ssr, setSsr] = useState(true)
 
-  const onExport = (id) => {
-    // TODO
-  }
-
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       setSsr(false)
     }
   }, [])
@@ -127,16 +164,16 @@ export default function MapPageContents() {
       <Sidebar dashboardId={dashboardId} setDashboardId={setDashboardId} />
       <motion.div
         style={{
-          position: "absolute",
+          position: 'absolute',
           top: 0,
           left: 0,
-          width: "100vw",
-          height: "100vh",
+          width: '100vw',
+          height: '100vh',
           zIndex: 1,
-          pointerEvents: "none",
+          pointerEvents: 'none',
         }}
-        initial={{ backgroundColor: "#000000ff" }}
-        animate={{ backgroundColor: "#00000000" }}
+        initial={{ backgroundColor: '#000000ff' }}
+        animate={{ backgroundColor: '#00000000' }}
         transition={{ delay: 1.5, duration: 1 }}
       />
     </>

@@ -43,6 +43,8 @@ const World = () => {
       })
   }, [])
 
+  const [pathPointAlt, setPathPointAlt] = useState(0.01)
+
   useEffect(() => {
     const renderGlobe = () => {
       ReactDOM.render(
@@ -57,6 +59,7 @@ const World = () => {
           pathPointLat={(p) => p[1]}
           pathPointLng={(p) => p[0]}
           pathColor={() => 'rgba(137, 196, 244, 1)'}
+          pathPointAlt={0.01}
           pathDashLength={0.1}
           pathDashGap={0.008}
           pathDashAnimateTime={12000}
