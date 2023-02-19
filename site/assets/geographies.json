@@ -1,0 +1,63 @@
+[
+  {
+    "title": "Bay of Bengal",
+    "long": 86.586036,
+    "lat": 14.872533,
+    "fish": [
+      "Hilsa (Tenualosa ilisha)",
+      "Ribbonfish (Trichiurus lepturus)",
+      "Sardine (Sardinella spp.)",
+      "Indian mackerel (Rastrelliger kanagurta)",
+      "Tuna (Thunnus spp.)",
+      "Prawn (Penaeus spp.)",
+      "Catfish (Pangasius pangasius)",
+      "Squid (Loligo spp.)",
+      "Silver pomfret (Pampus argenteus)",
+      "Threadfin bream (Nemipterus spp.)",
+      "Barramundi (Lates calcarifer)",
+      "Mud crab (Scylla spp.)",
+      "Seer fish (Scomberomorus spp.)",
+      "Yellowfin tuna (Thunnus albacares)",
+      "Grouper (Epinephelus spp.)"
+    ]
+  },
+  {
+    "title": "South China Sea",
+    "long": 113.5,
+    "lat": 10.5,
+    "fish": [
+      "Mackerel (Scomber spp.)",
+      "Tuna (Thunnus spp.)",
+      "Sardine (Sardinella spp.)",
+      "Skipjack tuna (Katsuwonus pelamis)",
+      "Squid (Loligo spp.)",
+      "Threadfin (Eleutheronema tetradactylum)",
+      "Barracuda (Sphyraena spp.)",
+      "Yellowfin tuna (Thunnus albacares)",
+      "Shrimp (Penaeus spp.)",
+      "Grouper (Epinephelus spp.)",
+      "Sea bass (Lates calcarifer)",
+      "Crab (Portunus spp.)",
+      "Red snapper (Lutjanus spp.)",
+      "Prawn (Penaeus spp.)",
+      "Trevally (Caranx spp.)"
+    ]
+  },
+  {
+    "title": "Japan",
+    "long": 139.5,
+    "lat": 36.5,
+    "fish": [
+      "Tuna (Maguro)",
+      "Yellowtail (Buri or Hamachi)",
+      "Mackerel (Saba)",
+      "Eel (Unagi or Anago)",
+      "Salmon (Sake)",
+      "Cod (Tara)",
+      "Halibut (Ohyo)",
+      "Sea bream (Tai)",
+      "Squid (Ika)",
+      "Octopus (Tako)"
+    ]
+  }
+]

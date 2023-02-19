@@ -39,12 +39,16 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
             left: 0,
             bottom: 0,
             width: "40%",
-            background: gradient,
+            backgroundImage: "url('/hotspot.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            color: 'white'
           }}>
           <IconButton
             position="absolute"
-            top={4}
-            right={4}
+            top={10}
+            right={8}
+            variant='unstyled'
             aria-label="Close"
             icon={<CloseIcon />}
             onClick={() => setDashboardId(-1)}
@@ -71,7 +75,7 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
             [insert images here]
             <Flex gap={2}>
               <Button mt={4} colorScheme="blue" variant="solid" leftIcon={<LinkIcon />} onClick={() => onExport(id)}>
-                Export Report to Law Enforcement
+                Export Report to Coast Guard
               </Button>
             </Flex>
           </Box>
@@ -133,7 +137,7 @@ export default function MapPageContents() {
         }}
         initial={{ backgroundColor: "#000000ff" }}
         animate={{ backgroundColor: "#00000000" }}
-        transition={{ delay: 2, duration: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
       />
     </>
   )
