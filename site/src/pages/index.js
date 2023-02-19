@@ -173,6 +173,7 @@ export default function Home() {
 
       <Flex
         as={motion.div}
+        transition={{ duration: 0}}
         animate={{ opacity: calculateTextOpacity(scrollCounter) }}
         align="center"
         justify="center"
@@ -183,6 +184,7 @@ export default function Home() {
         h="100vh"
         pos="absolute"
         top={0}
+        color='white'
         left={0}
       >
         <Flex direction="row" gap={10}>
