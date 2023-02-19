@@ -76,8 +76,6 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
   const variant = dashboardId === -1 ? "closed" : "open"
   const curHotspot = hotspots[dashboardId - 1]
 
-  console.log(dashboardId)
-
   return (
     <AnimatePresence exitBeforeEnter>
       <motion.div

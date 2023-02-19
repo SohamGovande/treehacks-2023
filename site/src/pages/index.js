@@ -88,10 +88,6 @@ export default function Home() {
     }
   }, [])
 
-  useEffect(() => {
-    console.log('languagae canged to ', language)
-  }, [language])
-
   const translations = {
     en: {
       language: 'English',
