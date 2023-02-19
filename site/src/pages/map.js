@@ -1,15 +1,15 @@
 import MapPageContents from "@/components/MapPageContents";
 import { DataProvider } from "@/contexts/DataContext";
 
-export default function MapPage({ detections }) {
-  return <DataProvider detections={detections}><MapPageContents /></DataProvider>;
+export default function MapPage({ hotspots }) {
+  return <DataProvider hotspots={hotspots}><MapPageContents /></DataProvider>;
 }
 
 export const getStaticProps = async () => {
-  const detections = require('../../assets/detections.json')
+  const hotspots = require('../../assets/hotspots.json')
   return {
     props: {
-      detections
+      hotspots
     },
   }
 }

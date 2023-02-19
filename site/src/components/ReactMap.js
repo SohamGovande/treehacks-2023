@@ -6,12 +6,9 @@ import kmeansAsync from "@/utils/kmeans"
 import { useData } from "@/contexts/DataContext"
 
 const INITIAL_WINDOW_LOCATION = [114.4048, 15.4881]
-const OPAQUE_COLOR = [53, 175, 247, 1]
-const TRANSPARENT_COLOR = [53, 175, 247, 0.6]
-const POINT_COLOR = [255, 255, 255, 1]
 
 const generateConvexHillPolygonRings = (points) => {
-  const pointsXY = points.map((p) => ({ x: p[0], y: p[1] }))
+  const pointsXY = points.map((p) => ({ x: p.long, y: p.lat }))
   const hull = convexhull.makeHull(pointsXY)
   const rings = []
   for (let i = 0; i < hull.length; i++) {
@@ -42,8 +39,8 @@ const createCircle = (point, radius) => {
   return
 }
 
-const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
-  const rings = useMemo(() => generateConvexHillPolygonRings(points), [points])
+const HotspotPolygon = ({ boats, id, view, outlineColor, transparentColor, onViewDashboard }) => {
+  const rings = useMemo(() => generateConvexHillPolygonRings(boats), [boats])
   const [gfx, setGfx] = useState([])
   const [n, setN] = useState(0)
 
@@ -66,10 +63,10 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
     // Create a symbol for rendering the graphic
     const fillSymbol = {
       type: "simple-fill", // autocasts as new SimpleFillSymbol()
-      color: TRANSPARENT_COLOR,
+      color: transparentColor,
       outline: {
         // autocasts as new SimpleLineSymbol()
-        color: OPAQUE_COLOR,
+        color: outlineColor,
         width: 1,
       },
     }
@@ -90,14 +87,13 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
       }
     })
 
-
     setGfx((gfx) => [...gfx, graphic])
     view.graphics.add(graphic)
 
     // Add points for each of the locations
-    for (const point of points) {
+    for (const boat of boats) {
       const circleGeometry = new Circle({
-        center: point,
+        center: [boat.long, boat.lat],
         geodesic: true,
         numberOfPoints: 100,
         radius: 2,
@@ -111,7 +107,7 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
           style: "none",
           outline: {
             width: 2,
-            color: POINT_COLOR,
+            color: outlineColor,
           },
         },
       })
@@ -139,20 +135,8 @@ const HotspotPolygon = ({ points, id, view, onViewDashboard }) => {
 }
 
 export default function ReactMap({ onViewDashboard }) {
-  const [clusters, setClusters] = useState([])
-  const { detections } = useData()
+  let { hotspots } = useData()
   const onLoad = async () => {}
-
-  const createClusters = async () => {
-    const results = await kmeansAsync(detections, {
-      k: 3,
-    })
-    setClusters(results.map((result) => result.cluster))
-  }
-
-  useEffect(() => {
-    createClusters()
-  }, [])
 
   return (
     <Map
@@ -164,8 +148,8 @@ export default function ReactMap({ onViewDashboard }) {
         zoom: 5,
       }}
       onLoad={onLoad}>
-      {clusters.map((cluster, i) => (
-        <HotspotPolygon key={i} id={i + 1} points={cluster} onViewDashboard={onViewDashboard} />
+      {hotspots.map((data, i) => (
+        <HotspotPolygon key={i} id={i + 1} {...data} onViewDashboard={onViewDashboard} />
       ))}
     </Map>
   )
