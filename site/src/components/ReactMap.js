@@ -85,6 +85,7 @@ const HotspotPolygon = ({ boats, title, id, view, outlineColor, transparentColor
       if (clickedGraphic == graphic) {
         onViewDashboard(id)
       }
+      view.popup.visible = false
     })
 
     setGfx((gfx) => [...gfx, graphic])

@@ -84,6 +84,7 @@ const Sidebar = ({ dashboardId, setDashboardId }) => {
         }}
         variants={variants}
         animate={variant}
+        initial="closed"
         style={{
           position: "absolute",
           top: 0,
@@ -192,20 +193,6 @@ export default function MapPageContents() {
       <VignetteEffect to="left" />
       <VignetteEffect to="right" />
       <Sidebar dashboardId={dashboardId} setDashboardId={setDashboardId} />
-      <motion.div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          zIndex: 1,
-          pointerEvents: 'none',
-        }}
-        initial={{ backgroundColor: '#000000ff' }}
-        animate={{ backgroundColor: '#00000000' }}
-        transition={{ delay: 1.5, duration: 1 }}
-      />
     </>
   )
 }
