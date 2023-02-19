@@ -39,7 +39,7 @@ const createCircle = (point, radius) => {
   return
 }
 
-const HotspotPolygon = ({ boats, id, view, outlineColor, transparentColor, onViewDashboard }) => {
+const HotspotPolygon = ({ boats, title, id, view, outlineColor, transparentColor, onViewDashboard }) => {
   const rings = useMemo(() => generateConvexHillPolygonRings(boats), [boats])
   const [gfx, setGfx] = useState([])
   const [n, setN] = useState(0)
@@ -75,8 +75,8 @@ const HotspotPolygon = ({ boats, id, view, outlineColor, transparentColor, onVie
       symbol: fillSymbol,
       popupTemplate: {
         id: id,
-        title: `Hotspot #${id}`,
-        content: "See the dashboard on the right for more information!",
+        title: title,
+        content: "See dashboard!",
       },
     })
 

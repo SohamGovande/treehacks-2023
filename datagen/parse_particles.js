@@ -46,7 +46,7 @@ for (let i = 0; i < clusters.length; i++) {
   })
   const { fish, title } = closest
 
-  clusters[i] = { ...cluster, minTime, maxTime, totalTonsLost, fish, title }
+  clusters[i] = { ...cluster, minTime, maxTime, totalTonsLost, fish, title, long: closest.long, lat: closest.lat }
 }
 
 // Sort clusters by totalTonsLost
