@@ -253,7 +253,6 @@ export default function DataWrapper({ hotspots }) {
 
 export const getStaticProps = async () => {
   let hotspots = require("../../assets/hotspots.json")
-  hotspots = [hotspots[9]]
   return {
     props: {
       hotspots,
