@@ -99,7 +99,7 @@ function Home() {
   const translations = {
     en: {
       language: "English",
-      ShipSense: "Live Demo",
+      ShipSense: "ShipSense",
       "300 billion fish are caught illegally": "Mitigate overfishing with AI-augmented satellite imagery",
       "What we're shipping": "What we're shipping",
     },
